@@ -100,14 +100,6 @@ export default function DashboardPage() {
       isLoading: jobsLoading,
     },
     {
-      title: 'NICE Clusters',
-      value: clustersData?.meta?.total,
-      description: 'Competency groupings',
-      icon: Layers,
-      href: '/admin/clusters',
-      isLoading: clustersLoading,
-    },
-    {
       title: 'TKSs',
       value: tksData?.meta?.total,
       description: 'Tasks, Knowledge & Skills',
@@ -125,7 +117,7 @@ export default function DashboardPage() {
     },
     {
       title: 'Universities',
-      value: universitiesData?.meta?.total,
+      value: universitiesData?.data?.length,
       description: 'Partner institutions',
       icon: GraduationCap,
       href: '/admin/universities',
@@ -195,67 +187,6 @@ export default function DashboardPage() {
           ))}
         </div>
       </div>
-
-      {/* Getting Started Guide */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
-            Getting Started
-          </CardTitle>
-          <CardDescription>
-            Follow these steps to set up your CyberPath curriculum
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ol className="space-y-4">
-            <li className="flex items-start gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-medium">
-                1
-              </span>
-              <div>
-                <p className="font-medium">Import TKSs from NICE Framework</p>
-                <p className="text-sm text-muted-foreground">
-                  Start by adding Tasks, Knowledge, and Skills from the NICE Cybersecurity Workforce Framework.
-                </p>
-              </div>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-medium">
-                2
-              </span>
-              <div>
-                <p className="font-medium">Create NICE Clusters</p>
-                <p className="text-sm text-muted-foreground">
-                  Group related TKSs into clusters that represent competency areas.
-                </p>
-              </div>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-medium">
-                3
-              </span>
-              <div>
-                <p className="font-medium">Define Jobs</p>
-                <p className="text-sm text-muted-foreground">
-                  Create job roles and map them to exactly 4 NICE clusters each.
-                </p>
-              </div>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-medium">
-                4
-              </span>
-              <div>
-                <p className="font-medium">Add Topics and Curriculum</p>
-                <p className="text-sm text-muted-foreground">
-                  Create educational topics, add universities and courses, then map course weeks to topics.
-                </p>
-              </div>
-            </li>
-          </ol>
-        </CardContent>
-      </Card>
     </div>
   );
 }

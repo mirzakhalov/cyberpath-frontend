@@ -14,6 +14,10 @@ import {
   Settings,
   ChevronDown,
   Shield,
+  Users,
+  Route,
+  TrendingUp,
+  Bot,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -41,12 +45,19 @@ const navigation: (NavItem | NavGroup)[] = [
     icon: LayoutDashboard,
   },
   {
+    title: 'Analytics',
+    items: [
+      { title: 'Students', href: '/admin/students', icon: Users },
+      { title: 'Pathways', href: '/admin/pathways', icon: Route },
+      { title: 'Progress', href: '/admin/progress', icon: TrendingUp },
+      { title: 'AI Audit', href: '/admin/audit', icon: Bot },
+    ],
+  },
+  {
     title: 'NICE Framework',
     items: [
       { title: 'Jobs', href: '/admin/jobs', icon: Briefcase },
-      { title: 'NICE Clusters', href: '/admin/clusters', icon: Layers },
       { title: 'TKSs', href: '/admin/tks', icon: Brain },
-      { title: 'Topics', href: '/admin/topics', icon: BookOpen },
     ],
   },
   {
@@ -54,6 +65,7 @@ const navigation: (NavItem | NavGroup)[] = [
     items: [
       { title: 'Universities', href: '/admin/universities', icon: GraduationCap },
       { title: 'Courses', href: '/admin/courses', icon: BookMarked },
+      { title: 'Topics', href: '/admin/topics', icon: BookOpen },
       { title: 'SkillBit Challenges', href: '/admin/skillbits', icon: Zap },
     ],
   },
@@ -162,4 +174,5 @@ export function AdminSidebar() {
     </aside>
   );
 }
+
 

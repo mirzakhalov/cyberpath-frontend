@@ -6,6 +6,7 @@ export default function SignInPage() {
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
       <div className="relative">
         <SignIn
+          forceRedirectUrl="/"
           appearance={{
             elements: {
               rootBox: 'mx-auto',
@@ -23,4 +24,5 @@ export default function SignInPage() {
     </div>
   );
 }
+
 

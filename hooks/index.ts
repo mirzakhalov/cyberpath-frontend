@@ -7,3 +7,5 @@ export * from './use-universities';
 export * from './use-courses';
 export * from './use-weeks';
 export * from './use-skillbits';
+export * from './use-onboarding';
+export * from './use-dashboard';

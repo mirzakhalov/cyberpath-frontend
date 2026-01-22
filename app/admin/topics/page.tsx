@@ -61,20 +61,6 @@ export default function TopicsListPage() {
       ),
     },
     {
-      accessorKey: 'prerequisite_count',
-      header: 'Prerequisites',
-      cell: ({ row }) => (
-        <span className="text-muted-foreground">{row.original.prerequisite_count ?? 0}</span>
-      ),
-    },
-    {
-      accessorKey: 'course_week_count',
-      header: 'Used In Weeks',
-      cell: ({ row }) => (
-        <span className="text-muted-foreground">{row.original.course_week_count ?? 0}</span>
-      ),
-    },
-    {
       id: 'actions',
       cell: ({ row }) => (
         <DropdownMenu>

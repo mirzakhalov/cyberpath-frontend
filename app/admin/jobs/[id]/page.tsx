@@ -131,97 +131,6 @@ export default function JobDetailPage() {
               </CardContent>
             </Card>
           )}
-
-          {/* Clusters */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Layers className="h-5 w-5" />
-                NICE Clusters
-              </CardTitle>
-              <CardDescription>
-                {job.clusters?.length ?? 0} / 4 clusters mapped to this job
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {job.clusters && job.clusters.length > 0 ? (
-                <div className="space-y-3">
-                  {job.clusters.map((cluster) => (
-                    <Link
-                      key={cluster.id}
-                      href={`/admin/clusters/${cluster.id}`}
-                      className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted transition-colors"
-                    >
-                      <div>
-                        <p className="font-medium">{cluster.name}</p>
-                        {cluster.code && (
-                          <p className="text-sm text-muted-foreground">Code: {cluster.code}</p>
-                        )}
-                      </div>
-                      <Badge variant="secondary">{cluster.tks_count ?? 0} TKSs</Badge>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-muted-foreground text-center py-8">
-                  No clusters assigned to this job.
-                </p>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Required TKSs */}
-          {job.required_tks && job.required_tks.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Brain className="h-5 w-5" />
-                  Required TKSs
-                </CardTitle>
-                <CardDescription>
-                  {job.required_tks.length} competencies required for this job (via clusters)
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Code</TableHead>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Category</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {job.required_tks.map((tks) => (
-                      <TableRow key={tks.id}>
-                        <TableCell>
-                          <Link
-                            href={`/admin/tks/${tks.id}`}
-                            className="font-mono text-sm hover:text-primary"
-                          >
-                            {tks.code}
-                          </Link>
-                        </TableCell>
-                        <TableCell>
-                          <Link
-                            href={`/admin/tks/${tks.id}`}
-                            className="hover:text-primary"
-                          >
-                            {tks.name}
-                          </Link>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="secondary" className={categoryColors[tks.category]}>
-                            {tks.category}
-                          </Badge>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          )}
         </div>
 
         {/* Sidebar */}
@@ -239,31 +148,6 @@ export default function JobDetailPage() {
               </div>
             </CardContent>
           </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Statistics</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm">
-                  <Layers className="h-4 w-4 text-muted-foreground" />
-                  <span>Clusters</span>
-                </div>
-                <Badge variant={job.cluster_count === 4 ? 'secondary' : 'destructive'}>
-                  {job.cluster_count ?? 0} / 4
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm">
-                  <Brain className="h-4 w-4 text-muted-foreground" />
-                  <span>Required TKSs</span>
-                </div>
-                <span className="font-medium">{job.required_tks?.length ?? 0}</span>
-              </div>
-            </CardContent>
-          </Card>
-
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Metadata</CardTitle>
@@ -287,6 +171,62 @@ export default function JobDetailPage() {
           </Card>
         </div>
       </div>
+
+      {/* Required TKSs - Full Width */}
+      {job.required_tks && job.required_tks.length > 0 && (
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Brain className="h-5 w-5" />
+              Linked TKSs
+            </CardTitle>
+            <CardDescription>
+              {job.required_tks.length} competencies linked to this job
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[120px]">Code</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead className="w-[100px]">Category</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {job.required_tks.map((tks) => (
+                    <TableRow key={tks.id}>
+                      <TableCell className="whitespace-nowrap">
+                        <Link
+                          href={`/admin/tks/${tks.id}`}
+                          className="font-mono text-sm hover:text-primary"
+                        >
+                          {tks.code}
+                        </Link>
+                      </TableCell>
+                      <TableCell className="max-w-0">
+                        <Link
+                          href={`/admin/tks/${tks.id}`}
+                          className="hover:text-primary block truncate"
+                          title={tks.name}
+                        >
+                          {tks.name}
+                        </Link>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary" className={categoryColors[tks.category]}>
+                          {tks.category}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <DeleteConfirmDialog
         open={deleteDialogOpen}

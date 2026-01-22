@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -28,18 +28,18 @@ export function PageHeader({ title, description, breadcrumbs, actions }: PageHea
         <Breadcrumb className="mb-4">
           <BreadcrumbList>
             {breadcrumbs.map((item, index) => (
-              <BreadcrumbItem key={index}>
-                {index < breadcrumbs.length - 1 ? (
-                  <>
+              <React.Fragment key={index}>
+                <BreadcrumbItem>
+                  {index < breadcrumbs.length - 1 ? (
                     <BreadcrumbLink asChild>
                       <Link href={item.href || '#'}>{item.label}</Link>
                     </BreadcrumbLink>
-                    <BreadcrumbSeparator />
-                  </>
-                ) : (
-                  <BreadcrumbPage>{item.label}</BreadcrumbPage>
-                )}
-              </BreadcrumbItem>
+                  ) : (
+                    <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                  )}
+                </BreadcrumbItem>
+                {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
+              </React.Fragment>
             ))}
           </BreadcrumbList>
         </Breadcrumb>
@@ -56,4 +56,5 @@ export function PageHeader({ title, description, breadcrumbs, actions }: PageHea
     </div>
   );
 }
+
 

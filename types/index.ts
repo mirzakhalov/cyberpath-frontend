@@ -1,10 +1,11 @@
 export * from './api';
-export * from './job';
 export * from './cluster';
+export * from './job';
 export * from './tks';
 export * from './topic';
 export * from './university';
 export * from './course';
 export * from './course-week';
 export * from './skillbit';
-
+export * from './onboarding';
+export * from './dashboard';

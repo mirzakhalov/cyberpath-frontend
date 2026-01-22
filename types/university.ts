@@ -18,3 +18,4 @@ export interface UniversityFormData {
   notes?: string;
 }
 
+
