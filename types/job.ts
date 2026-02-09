@@ -13,6 +13,7 @@ export interface Job {
   career_domain_id?: string;
   career_domain?: CareerDomain;
   tks_count?: number;
+  cluster_count?: number;
   created_at?: string;
   updated_at?: string;
 }

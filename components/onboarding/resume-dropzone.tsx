@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import { useDropzone, type FileRejection } from 'react-dropzone';
 import { Upload, FileText, X, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -22,7 +22,7 @@ export function ResumeDropzone({
   const [error, setError] = useState<string | null>(null);
 
   const onDrop = useCallback(
-    (acceptedFiles: File[], rejectedFiles: { file: File; errors: { message: string }[] }[]) => {
+    (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
       setError(null);
       
       if (rejectedFiles.length > 0) {

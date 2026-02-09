@@ -112,7 +112,7 @@ export interface PathwayWeekProgress {
   completed_at: string | null;
 }
 
-export interface PathwayWeek {
+export interface DashboardPathwayWeek {
   id: string;
   sequence_order: number;
   course_week: {
@@ -133,7 +133,7 @@ export interface PathwayCourse {
   title: string;
   week_count: number;
   completion_percentage: number;
-  weeks: PathwayWeek[];
+  weeks: DashboardPathwayWeek[];
 }
 
 export interface PathwayDetail {
@@ -238,6 +238,7 @@ export interface AgentSessionListItem {
   total_output_tokens: number;
   estimated_cost_usd: number;
   decision_count: number;
+  error_message: string | null;
 }
 
 export interface AgentDecision {
@@ -288,6 +289,7 @@ export interface AgentStats {
 
 // Query Params
 export interface StudentQueryParams {
+  [key: string]: string | number | boolean | undefined;
   page?: number;
   page_size?: number;
   search?: string;
@@ -298,6 +300,7 @@ export interface StudentQueryParams {
 }
 
 export interface PathwayQueryParams {
+  [key: string]: string | number | boolean | undefined;
   page?: number;
   page_size?: number;
   user_id?: string;
@@ -310,6 +313,7 @@ export interface PathwayQueryParams {
 }
 
 export interface AgentSessionQueryParams {
+  [key: string]: string | number | boolean | undefined;
   page?: number;
   page_size?: number;
   user_id?: string;
