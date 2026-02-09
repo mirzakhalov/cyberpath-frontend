@@ -6,10 +6,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { PageHeader, PageLoader } from '@/components/shared';
 import { useTKS, useDeleteTKS } from '@/hooks/use-tks';
 import { DeleteConfirmDialog } from '@/components/admin/delete-confirm-dialog';
-import { Pencil, Trash2, Calendar, Layers, BookOpen } from 'lucide-react';
+import { Pencil, Trash2, Calendar, BookOpen } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { TKSCategory } from '@/types';
@@ -121,6 +129,7 @@ export default function TKSDetailPage() {
               </div>
             </CardContent>
           </Card>
+
         </div>
 
         {/* Sidebar */}
@@ -130,13 +139,6 @@ export default function TKSDetailPage() {
               <CardTitle className="text-base">Statistics</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm">
-                  <Layers className="h-4 w-4 text-muted-foreground" />
-                  <span>Clusters</span>
-                </div>
-                <span className="font-medium">{tks.cluster_count ?? 0}</span>
-              </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm">
                   <BookOpen className="h-4 w-4 text-muted-foreground" />
@@ -170,6 +172,86 @@ export default function TKSDetailPage() {
           </Card>
         </div>
       </div>
+
+      {/* Linked Topics Table - Full Width */}
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BookOpen className="h-5 w-5" />
+            Linked Topics
+          </CardTitle>
+          <CardDescription>
+            Topics that cover this competency
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {tks.topics && tks.topics.length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Topic</TableHead>
+                  <TableHead>Course</TableHead>
+                  <TableHead>Week</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {tks.topics.map((topic) => {
+                  const courseWeeks = topic.course_weeks ?? [];
+                  if (courseWeeks.length === 0) {
+                    return (
+                      <TableRow key={topic.id}>
+                        <TableCell>
+                          <Link
+                            href={`/admin/topics/${topic.id}`}
+                            className="hover:text-primary"
+                          >
+                            {topic.name}
+                          </Link>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">—</TableCell>
+                        <TableCell className="text-muted-foreground">—</TableCell>
+                      </TableRow>
+                    );
+                  }
+                  return courseWeeks.map((cw, idx) => (
+                    <TableRow key={`${topic.id}-${cw.id}`}>
+                      {idx === 0 ? (
+                        <TableCell rowSpan={courseWeeks.length}>
+                          <Link
+                            href={`/admin/topics/${topic.id}`}
+                            className="hover:text-primary"
+                          >
+                            {topic.name}
+                          </Link>
+                        </TableCell>
+                      ) : null}
+                      <TableCell>
+                        {cw.course ? (
+                          <Link
+                            href={`/admin/courses/${cw.course.id}`}
+                            className="hover:text-primary"
+                          >
+                            {cw.course.course_code} — {cw.course.course_name}
+                          </Link>
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="font-mono text-sm">
+                        Week {cw.week_number}
+                      </TableCell>
+                    </TableRow>
+                  ));
+                })}
+              </TableBody>
+            </Table>
+          ) : (
+            <p className="text-muted-foreground text-center py-8">
+              No topics linked to this TKS yet.
+            </p>
+          )}
+        </CardContent>
+      </Card>
 
       <DeleteConfirmDialog
         open={deleteDialogOpen}

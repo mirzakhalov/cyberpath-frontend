@@ -164,7 +164,7 @@ export default function DashboardPage() {
     <div>
       <PageHeader
         title="Dashboard"
-        description="Overview of your CyberPath platform data"
+        description="Overview of your SkillBit CyberPath platform data"
         breadcrumbs={[
           { label: 'Admin', href: '/admin/dashboard' },
           { label: 'Dashboard' },

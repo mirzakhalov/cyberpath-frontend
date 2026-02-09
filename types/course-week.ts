@@ -1,5 +1,6 @@
-import { Topic } from './topic';
-import { SkillBitChallenge } from './skillbit';
+import type { Topic } from './topic';
+import type { SkillBitChallenge } from './skillbit';
+import type { Course } from './course';
 
 export interface CourseWeek {
   id: string;
@@ -8,6 +9,7 @@ export interface CourseWeek {
   title: string;
   description?: string;
   estimated_hours?: number;
+  course?: Course;
   topics?: Topic[];
   topic_count?: number;
   skillbit_challenges?: SkillBitChallenge[];
@@ -24,5 +26,7 @@ export interface CourseWeekFormData {
   estimated_hours?: number;
   topic_ids: string[];
 }
+
+
 
 

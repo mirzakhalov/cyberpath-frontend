@@ -19,8 +19,16 @@ import { jobSchema, JobSchemaType } from '@/lib/validations/job';
 import { Job } from '@/types';
 import { LoadingSpinner } from '@/components/shared/loading-spinner';
 import { useClusters } from '@/hooks/use-clusters';
+import { useCareerDomains } from '@/hooks/use-career-domains';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { CheckCircle2, AlertCircle } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface JobFormProps {
   initialData?: Job;
@@ -30,6 +38,7 @@ interface JobFormProps {
 
 export function JobForm({ initialData, onSubmit, isLoading }: JobFormProps) {
   const { data: clustersData, isLoading: clustersLoading } = useClusters({ page_size: 100 });
+  const { data: careerDomainsData, isLoading: careerDomainsLoading } = useCareerDomains();
 
   const form = useForm<JobSchemaType>({
     resolver: zodResolver(jobSchema),
@@ -40,6 +49,7 @@ export function JobForm({ initialData, onSubmit, isLoading }: JobFormProps) {
       salary_max: initialData?.salary_max ?? undefined,
       requirements: initialData?.requirements ?? '',
       cluster_ids: initialData?.clusters?.map((c) => c.id) ?? [],
+      career_domain_id: initialData?.career_domain_id ?? undefined,
     },
   });
 
@@ -71,6 +81,38 @@ export function JobForm({ initialData, onSubmit, isLoading }: JobFormProps) {
               </FormControl>
               <FormDescription>
                 The title of the cybersecurity job role
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="career_domain_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Career Domain</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={careerDomainsLoading}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder={careerDomainsLoading ? 'Loading...' : 'Select a career domain'} />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {(careerDomainsData ?? []).map((domain) => (
+                    <SelectItem key={domain.id} value={domain.id}>
+                      {domain.code} - {domain.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                The NICE Framework career domain this job belongs to
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -214,5 +256,7 @@ export function JobForm({ initialData, onSubmit, isLoading }: JobFormProps) {
     </Form>
   );
 }
+
+
 
 

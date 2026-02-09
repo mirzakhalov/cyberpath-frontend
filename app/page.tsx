@@ -1,7 +1,8 @@
 import { auth } from '@clerk/nextjs/server';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Shield, ArrowRight, Lock, Users, BookOpen, Sparkles, Target, TrendingUp, GraduationCap } from 'lucide-react';
+import { ArrowRight, Lock, Users, BookOpen, Sparkles, Target, TrendingUp, GraduationCap } from 'lucide-react';
 import { AuthRedirect } from '@/components/auth/auth-redirect';
 
 export default async function HomePage() {
@@ -14,7 +15,7 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 text-white">
       {/* Grid background */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
       
@@ -23,8 +24,8 @@ export default async function HomePage() {
         <header className="container mx-auto px-6 py-6">
           <nav className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600">
-                <Shield className="h-6 w-6 text-white" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-orange-500 to-red-600">
+                <Image src="/skillbit-owl.svg" alt="SkillBit" width={24} height={24} className="brightness-0 invert" />
               </div>
               <span className="text-xl font-bold">CyberPath</span>
             </div>
@@ -35,7 +36,7 @@ export default async function HomePage() {
                 </Button>
               </Link>
               <Link href="/onboarding">
-                <Button className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white">
+                <Button className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white">
                   Get Started
                 </Button>
               </Link>
@@ -46,14 +47,14 @@ export default async function HomePage() {
         {/* Hero */}
         <main className="container mx-auto px-6 py-16 md:py-24">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full px-4 py-2 text-sm mb-8 border border-cyan-500/30">
-              <Sparkles className="h-4 w-4 text-cyan-400" />
-              <span className="text-cyan-300">AI-Powered Career Guidance</span>
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-full px-4 py-2 text-sm mb-8 border border-orange-500/30">
+              <Sparkles className="h-4 w-4 text-orange-400" />
+              <span className="text-orange-300">AI-Powered Career Guidance</span>
             </div>
             
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
               Your Path to a{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-violet-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400">
                 Cybersecurity
               </span>{' '}
               Career
@@ -66,7 +67,7 @@ export default async function HomePage() {
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
               <Link href="/onboarding">
-                <Button size="lg" className="h-14 px-8 text-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white shadow-lg shadow-cyan-500/30 gap-2">
+                <Button size="lg" className="h-14 px-8 text-lg bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white shadow-lg shadow-orange-500/30 gap-2">
                   Find Your Career Path
                   <ArrowRight className="h-5 w-5" />
                 </Button>
@@ -81,22 +82,22 @@ export default async function HomePage() {
             {/* How it works */}
             <div className="grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
               <div className="flex flex-col items-center text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500/20 to-cyan-500/10 border border-cyan-500/30 mb-4">
-                  <span className="text-lg font-bold text-cyan-400">1</span>
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-orange-500/20 to-orange-500/10 border border-orange-500/30 mb-4">
+                  <span className="text-lg font-bold text-orange-400">1</span>
                 </div>
                 <h3 className="text-sm font-semibold text-white mb-1">Upload Resume</h3>
                 <p className="text-xs text-slate-400">Share your background</p>
               </div>
               <div className="flex flex-col items-center text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-500/20 to-blue-500/10 border border-blue-500/30 mb-4">
-                  <span className="text-lg font-bold text-blue-400">2</span>
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-amber-500/20 to-amber-500/10 border border-amber-500/30 mb-4">
+                  <span className="text-lg font-bold text-amber-400">2</span>
                 </div>
                 <h3 className="text-sm font-semibold text-white mb-1">Get Matched</h3>
                 <p className="text-xs text-slate-400">AI-powered recommendations</p>
               </div>
               <div className="flex flex-col items-center text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-violet-500/20 to-violet-500/10 border border-violet-500/30 mb-4">
-                  <span className="text-lg font-bold text-violet-400">3</span>
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-red-500/20 to-red-500/10 border border-red-500/30 mb-4">
+                  <span className="text-lg font-bold text-red-400">3</span>
                 </div>
                 <h3 className="text-sm font-semibold text-white mb-1">Start Learning</h3>
                 <p className="text-xs text-slate-400">Personalized pathway</p>
@@ -106,9 +107,9 @@ export default async function HomePage() {
 
           {/* Features */}
           <div className="grid md:grid-cols-3 gap-8 mt-24 max-w-5xl mx-auto">
-            <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10 hover:border-cyan-500/30 transition-colors">
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-cyan-500/30 to-cyan-500/10 flex items-center justify-center mb-4">
-                <Target className="h-6 w-6 text-cyan-400" />
+            <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10 hover:border-orange-500/30 transition-colors">
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-orange-500/30 to-orange-500/10 flex items-center justify-center mb-4">
+                <Target className="h-6 w-6 text-orange-400" />
               </div>
               <h3 className="text-lg font-semibold mb-2">AI Career Matching</h3>
               <p className="text-slate-400 text-sm">
@@ -117,9 +118,9 @@ export default async function HomePage() {
               </p>
             </div>
 
-            <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10 hover:border-blue-500/30 transition-colors">
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500/30 to-blue-500/10 flex items-center justify-center mb-4">
-                <GraduationCap className="h-6 w-6 text-blue-400" />
+            <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10 hover:border-amber-500/30 transition-colors">
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-amber-500/30 to-amber-500/10 flex items-center justify-center mb-4">
+                <GraduationCap className="h-6 w-6 text-amber-400" />
               </div>
               <h3 className="text-lg font-semibold mb-2">University Courses</h3>
               <p className="text-slate-400 text-sm">
@@ -128,9 +129,9 @@ export default async function HomePage() {
               </p>
             </div>
 
-            <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10 hover:border-violet-500/30 transition-colors">
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-violet-500/30 to-violet-500/10 flex items-center justify-center mb-4">
-                <TrendingUp className="h-6 w-6 text-violet-400" />
+            <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10 hover:border-red-500/30 transition-colors">
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-red-500/30 to-red-500/10 flex items-center justify-center mb-4">
+                <TrendingUp className="h-6 w-6 text-red-400" />
               </div>
               <h3 className="text-lg font-semibold mb-2">Personalized Pathways</h3>
               <p className="text-slate-400 text-sm">
@@ -149,7 +150,7 @@ export default async function HomePage() {
                     <Lock className="h-3 w-3 text-slate-400" />
                     <span className="text-slate-300">For Administrators</span>
                   </div>
-                  <h2 className="text-2xl font-bold mb-3">CyberPath Admin Dashboard</h2>
+                  <h2 className="text-2xl font-bold mb-3">SkillBit CyberPath Admin</h2>
                   <p className="text-slate-400 text-sm mb-4">
                     Manage NICE Framework data, university courses, and educational content. 
                     Designed for curriculum administrators and educators.
@@ -163,15 +164,15 @@ export default async function HomePage() {
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5">
-                    <BookOpen className="h-4 w-4 text-cyan-400" />
+                    <BookOpen className="h-4 w-4 text-orange-400" />
                     <span className="text-xs text-slate-300">Courses</span>
                   </div>
                   <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5">
-                    <Users className="h-4 w-4 text-blue-400" />
+                    <Users className="h-4 w-4 text-amber-400" />
                     <span className="text-xs text-slate-300">Jobs</span>
                   </div>
                   <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5">
-                    <Lock className="h-4 w-4 text-violet-400" />
+                    <Lock className="h-4 w-4 text-red-400" />
                     <span className="text-xs text-slate-300">TKS</span>
                   </div>
                   <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5">
@@ -188,8 +189,8 @@ export default async function HomePage() {
         <footer className="container mx-auto px-6 py-8 mt-16 border-t border-white/10">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-400">
             <div className="flex items-center gap-2">
-              <Shield className="h-4 w-4 text-cyan-500" />
-              <p>© 2026 CyberPath. All rights reserved.</p>
+              <Image src="/skillbit-owl.svg" alt="SkillBit" width={16} height={16} className="brightness-0 invert opacity-70" />
+              <p>© 2026 SkillBit CyberPath. All rights reserved.</p>
             </div>
             <p>Aligned with the NICE Cybersecurity Workforce Framework</p>
           </div>

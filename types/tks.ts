@@ -1,3 +1,5 @@
+import type { Topic } from './topic';
+
 export type TKSCategory = 'task' | 'knowledge' | 'skill';
 
 export interface TKS {
@@ -8,6 +10,7 @@ export interface TKS {
   category: TKSCategory;
   cluster_count?: number;
   topic_count?: number;
+  topics?: Topic[];
   created_at?: string;
   updated_at?: string;
 }
@@ -23,5 +26,7 @@ export interface TKSFilters {
   category?: TKSCategory;
   search?: string;
 }
+
+
 
 

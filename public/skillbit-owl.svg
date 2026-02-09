@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 110" fill="none" stroke="#FF4500" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Ear tufts -->
+  <path d="M30 35 L22 10 L42 30"/>
+  <path d="M70 35 L78 10 L58 30"/>
+  <!-- Head -->
+  <path d="M30 35 C30 20, 70 20, 70 35"/>
+  <!-- Eyes outer -->
+  <circle cx="40" cy="42" r="12"/>
+  <circle cx="60" cy="42" r="12"/>
+  <!-- Pupils -->
+  <circle cx="40" cy="42" r="3" fill="#FF4500"/>
+  <circle cx="60" cy="42" r="3" fill="#FF4500"/>
+  <!-- Beak / V between eyes -->
+  <path d="M46 52 L50 58 L54 52"/>
+  <!-- Body outline -->
+  <path d="M28 42 C20 55, 18 75, 30 90"/>
+  <path d="M72 42 C80 55, 82 75, 70 90"/>
+  <!-- Wing curve -->
+  <path d="M32 55 C18 68, 22 82, 35 88"/>
+  <!-- Tail / base -->
+  <path d="M30 90 L70 90"/>
+  <!-- Feet line -->
+  <line x1="25" y1="96" x2="75" y2="96" stroke-width="3"/>
+  <line x1="38" y1="90" x2="38" y2="96"/>
+  <line x1="62" y1="90" x2="62" y2="96"/>
+</svg>

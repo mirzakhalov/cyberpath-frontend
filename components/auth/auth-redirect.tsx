@@ -131,9 +131,9 @@ export function AuthRedirect() {
 
   // Show a loading state while determining redirect
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900">
       <div className="flex flex-col items-center gap-4">
-        <div className="h-8 w-8 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin" />
+        <div className="h-8 w-8 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
         <p className="text-white/70 text-sm">Redirecting...</p>
       </div>
     </div>

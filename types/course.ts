@@ -1,5 +1,5 @@
-import { University } from './university';
-import { CourseWeek } from './course-week';
+import type { University } from './university';
+import type { CourseWeek } from './course-week';
 
 export interface Course {
   id: string;
@@ -20,5 +20,7 @@ export interface CourseFormData {
   course_name: string;
   description?: string;
 }
+
+
 
 

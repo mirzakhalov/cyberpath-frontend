@@ -1,6 +1,7 @@
 export * from './use-api';
 export * from './use-jobs';
 export * from './use-clusters';
+export * from './use-career-domains';
 export * from './use-tks';
 export * from './use-topics';
 export * from './use-universities';
@@ -8,4 +9,5 @@ export * from './use-courses';
 export * from './use-weeks';
 export * from './use-skillbits';
 export * from './use-onboarding';
+export * from './use-job-explore';
 export * from './use-dashboard';

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
@@ -13,7 +14,6 @@ import {
   Zap,
   Settings,
   ChevronDown,
-  Shield,
   Users,
   Route,
   TrendingUp,
@@ -138,11 +138,11 @@ export function AdminSidebar() {
         {/* Logo */}
         <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-6">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sidebar-primary">
-            <Shield className="h-5 w-5 text-sidebar-primary-foreground" />
+            <Image src="/skillbit-owl.svg" alt="SkillBit" width={20} height={20} className="brightness-0 invert" />
           </div>
           <div className="flex flex-col">
             <span className="font-semibold text-sidebar-foreground">CyberPath</span>
-            <span className="text-xs text-sidebar-foreground/60">Admin</span>
+            <span className="text-xs text-sidebar-foreground/60">SkillBit Admin</span>
           </div>
         </div>
 
@@ -167,7 +167,7 @@ export function AdminSidebar() {
         {/* Footer */}
         <div className="border-t border-sidebar-border p-4">
           <p className="text-xs text-sidebar-foreground/50 text-center">
-            CyberPath v1.0.0
+            SkillBit CyberPath v1.0.0
           </p>
         </div>
       </div>

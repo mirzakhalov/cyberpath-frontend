@@ -37,9 +37,9 @@ export function OnboardingProgress({
                 className={cn(
                   'relative flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all duration-300',
                   step.id < currentStep
-                    ? 'border-cyan-500 bg-cyan-500'
+                    ? 'border-orange-500 bg-orange-500'
                     : step.id === currentStep
-                    ? 'border-cyan-500 bg-white dark:bg-slate-900'
+                    ? 'border-orange-500 bg-white dark:bg-slate-900'
                     : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900'
                 )}
               >
@@ -50,7 +50,7 @@ export function OnboardingProgress({
                     className={cn(
                       'text-sm font-semibold',
                       step.id === currentStep
-                        ? 'text-cyan-600 dark:text-cyan-400'
+                        ? 'text-orange-600 dark:text-orange-400'
                         : 'text-slate-400 dark:text-slate-500'
                     )}
                   >
@@ -79,7 +79,7 @@ export function OnboardingProgress({
                   className={cn(
                     'h-0.5 w-full transition-all duration-500',
                     step.id < currentStep
-                      ? 'bg-cyan-500'
+                      ? 'bg-orange-500'
                       : 'bg-slate-200 dark:bg-slate-700'
                   )}
                 />
@@ -105,7 +105,7 @@ export function OnboardingProgressMobile({
       {/* Progress bar */}
       <div className="h-1 w-full rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
         <div
-          className="h-full rounded-full bg-cyan-500 transition-all duration-500"
+          className="h-full rounded-full bg-orange-500 transition-all duration-500"
           style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
         />
       </div>
@@ -122,4 +122,6 @@ export function OnboardingProgressMobile({
     </div>
   );
 }
+
+
 

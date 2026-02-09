@@ -68,14 +68,14 @@ export default function OnboardingStartPage() {
 
       {/* Hero section */}
       <div className="max-w-4xl mx-auto text-center mb-12">
-        <div className="inline-flex items-center gap-2 bg-cyan-100 dark:bg-cyan-950/50 rounded-full px-4 py-2 text-sm font-medium text-cyan-700 dark:text-cyan-300 mb-6">
+        <div className="inline-flex items-center gap-2 bg-orange-100 dark:bg-orange-950/50 rounded-full px-4 py-2 text-sm font-medium text-orange-700 dark:text-orange-300 mb-6">
           <Sparkles className="h-4 w-4" />
           AI-Powered Career Guidance
         </div>
         
         <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 leading-tight">
           Discover Your{' '}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-600">
             Cybersecurity
           </span>{' '}
           Career Path
@@ -128,7 +128,7 @@ export default function OnboardingStartPage() {
             type="submit"
             size="lg"
             disabled={isLoading || !careerGoals.trim()}
-            className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white shadow-lg shadow-cyan-500/25"
+            className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white shadow-lg shadow-orange-500/25"
           >
             {isLoading ? (
               <span className="flex items-center gap-2">
@@ -149,7 +149,7 @@ export default function OnboardingStartPage() {
           {FEATURES.map((feature) => (
             <div key={feature.title} className="text-center">
               <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-slate-100 dark:bg-slate-800 mb-4">
-                <feature.icon className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
+                <feature.icon className="h-6 w-6 text-orange-600 dark:text-orange-400" />
               </div>
               <h3 className="text-sm font-semibold text-foreground mb-1">{feature.title}</h3>
               <p className="text-sm text-muted-foreground">{feature.description}</p>
@@ -174,4 +174,6 @@ export default function OnboardingStartPage() {
     </div>
   );
 }
+
+
 

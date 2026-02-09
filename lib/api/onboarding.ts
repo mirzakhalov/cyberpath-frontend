@@ -130,7 +130,8 @@ export async function generatePathway(
   authToken: string,
   jobId: string,
   desiredGoals?: string,
-  courseMode: 'parallel' | 'sequential' = 'parallel'
+  courseMode: 'parallel' | 'sequential' = 'parallel',
+  generationMode: 'topic' | 'lesson' = 'topic'
 ): Promise<ApiResponse<import('@/types').GeneratePathwayResponse>> {
   return onboardingRequest('/onboarding/generate-pathway', {
     method: 'POST',
@@ -139,6 +140,7 @@ export async function generatePathway(
       job_id: jobId,
       desired_goals: desiredGoals,
       course_mode: courseMode,
+      generation_mode: generationMode,
     },
   });
 }
@@ -151,11 +153,13 @@ export async function getPathway(
   authToken: string,
   pathwayId: string,
   includeWeeks: boolean = true
-): Promise<ApiResponse<{ pathway: import('@/types').Pathway }>> {
+): Promise<ApiResponse<import('@/types').Pathway>> {
   const url = `/onboarding/pathway/${pathwayId}${includeWeeks ? '?include_weeks=true' : ''}`;
   return onboardingRequest(url, {
     method: 'GET',
     authToken,
   });
 }
+
+
 

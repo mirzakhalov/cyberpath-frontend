@@ -7,5 +7,6 @@ export * from './university';
 export * from './course';
 export * from './course-week';
 export * from './skillbit';
+export * from './career-domain';
 export * from './onboarding';
 export * from './dashboard';

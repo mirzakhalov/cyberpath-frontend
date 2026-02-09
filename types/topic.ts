@@ -1,4 +1,5 @@
-import { TKS } from './tks';
+import type { TKS } from './tks';
+import type { CourseWeek } from './course-week';
 
 export interface Topic {
   id: string;
@@ -9,6 +10,7 @@ export interface Topic {
   prerequisites?: Topic[];
   prerequisite_count?: number;
   prerequisite_for?: Topic[];
+  course_weeks?: CourseWeek[];
   course_week_count?: number;
   created_at?: string;
   updated_at?: string;
@@ -20,5 +22,7 @@ export interface TopicFormData {
   tks_ids: string[];
   prerequisite_ids: string[];
 }
+
+
 
 

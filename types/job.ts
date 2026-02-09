@@ -1,5 +1,6 @@
 import { TKS } from './tks';
 import { Cluster } from './cluster';
+import { CareerDomain } from './career-domain';
 
 export interface Job {
   id: string;
@@ -9,6 +10,8 @@ export interface Job {
   salary_max?: number;
   requirements?: string;
   clusters?: Cluster[];
+  career_domain_id?: string;
+  career_domain?: CareerDomain;
   tks_count?: number;
   created_at?: string;
   updated_at?: string;
@@ -26,4 +29,5 @@ export interface JobFormData {
   salary_max?: number;
   requirements?: string;
   cluster_ids: string[];
+  career_domain_id?: string;
 }

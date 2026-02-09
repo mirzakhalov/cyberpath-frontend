@@ -72,11 +72,11 @@ export default function SelectJobPage() {
 
       {/* Selected job card */}
       <div className="max-w-2xl mx-auto mb-10">
-        <Card className="border-2 border-cyan-500/30 bg-gradient-to-br from-white to-cyan-50/30 dark:from-slate-900 dark:to-cyan-950/20">
+        <Card className="border-2 border-orange-500/30 bg-gradient-to-br from-white to-orange-50/30 dark:from-slate-900 dark:to-orange-950/20">
           <CardHeader className="pb-4">
             <div className="flex items-start justify-between">
               <div>
-                <Badge className="mb-3 bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300 border-0">
+                <Badge className="mb-3 bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300 border-0">
                   Selected Career Path
                 </Badge>
                 <CardTitle className="text-2xl font-bold text-foreground">
@@ -135,8 +135,8 @@ export default function SelectJobPage() {
       <div className="max-w-2xl mx-auto">
         <div className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-8 border border-slate-200 dark:border-slate-800">
           <div className="flex items-center gap-4 mb-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 dark:bg-cyan-900/40">
-              <User className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-100 dark:bg-orange-900/40">
+              <User className="h-6 w-6 text-orange-600 dark:text-orange-400" />
             </div>
             <div>
               <h3 className="text-lg font-semibold text-foreground">
@@ -152,7 +152,7 @@ export default function SelectJobPage() {
             <Button
               asChild
               size="lg"
-              className="h-12 text-base font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white"
+              className="h-12 text-base font-semibold bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white"
             >
               <Link href="/sign-up">
                 Create Account

@@ -3,14 +3,13 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Lightbulb } from 'lucide-react';
+import { ArrowLeft, Lightbulb, Compass, Target, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   OnboardingProgress,
   JobRecommendationCard,
   RecommendationsLoading,
-  JobCardSkeleton,
 } from '@/components/onboarding';
 import { useOnboarding } from '@/hooks';
 import { toast } from 'sonner';
@@ -27,7 +26,8 @@ export default function RecommendationsPage() {
   const router = useRouter();
   const {
     sessionToken,
-    desiredJob,
+    goalBasedRecs,
+    skillBasedRecs,
     recommendations,
     overallAnalysis,
     fetchRecommendations,
@@ -82,8 +82,12 @@ export default function RecommendationsPage() {
     }
   };
 
+  const hasRecommendations = (goalBasedRecs && goalBasedRecs.length > 0) ||
+                             (skillBasedRecs && skillBasedRecs.length > 0) ||
+                             (recommendations && recommendations.length > 0);
+
   // Show loading state while initializing or fetching
-  if (!isInitialized || (isLoading && !recommendations)) {
+  if (!isInitialized || (isLoading && !hasRecommendations)) {
     return (
       <div className="container mx-auto px-6 py-12">
         <div className="max-w-2xl mx-auto mb-12">
@@ -102,61 +106,174 @@ export default function RecommendationsPage() {
       </div>
 
       {/* Header */}
-      <div className="max-w-4xl mx-auto mb-8">
+      <div className="max-w-5xl mx-auto mb-6">
         <Link
           href="/onboarding"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to start
         </Link>
 
-        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
           Your Career Matches
         </h1>
-        <p className="text-lg text-muted-foreground">
-          Based on your background and goals, we've identified these cybersecurity careers 
-          that could be a great fit for you.
+        <p className="text-muted-foreground">
+          We&apos;ve found careers that match your goals and leverage your skills. Select one to continue.
         </p>
       </div>
 
-      {/* Overall analysis */}
+      {/* Overall analysis - more compact */}
       {overallAnalysis && (
-        <div className="max-w-4xl mx-auto mb-8">
-          <Card className="bg-gradient-to-br from-slate-50 to-cyan-50/30 dark:from-slate-900 dark:to-cyan-950/30 border-slate-200 dark:border-slate-800">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-100 dark:bg-cyan-900/40 shrink-0">
-                  <Lightbulb className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold text-foreground mb-2">
-                    AI Analysis of Your Profile
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {overallAnalysis}
-                  </p>
-                </div>
+        <div className="max-w-5xl mx-auto mb-6">
+          <Card className="bg-gradient-to-br from-slate-50 to-orange-50/30 dark:from-slate-900 dark:to-orange-950/30 border-slate-200 dark:border-slate-800">
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <Lightbulb className="h-5 w-5 text-orange-600 dark:text-orange-400 shrink-0 mt-0.5" />
+                <p className="text-sm text-muted-foreground">
+                  {overallAnalysis}
+                </p>
               </div>
             </CardContent>
           </Card>
         </div>
       )}
 
-      {/* Job recommendations */}
-      <div className="max-w-4xl mx-auto">
-        {recommendations && recommendations.length > 0 ? (
-          <div className="grid gap-6">
-            {recommendations.map((rec, index) => (
-              <JobRecommendationCard
-                key={rec.job.id}
-                recommendation={rec}
-                rank={index + 1}
-                isSelected={selectedJobId === rec.job.id}
-                onSelect={() => handleSelectJob(rec.job.id)}
-                disabled={isSelecting}
-              />
-            ))}
+      {/* Job recommendations - Two sections */}
+      <div className="max-w-5xl mx-auto">
+        {hasRecommendations ? (
+          <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-6">
+            <div className="space-y-8">
+              {/* Goal-based recommendations */}
+              {goalBasedRecs && goalBasedRecs.length > 0 && (
+                <section>
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100 dark:bg-purple-900/40">
+                      <Target className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-semibold text-foreground">Based on Your Goals</h2>
+                      <p className="text-xs text-muted-foreground">Careers aligned with where you want to go</p>
+                    </div>
+                  </div>
+                  <div className="grid gap-4">
+                    {goalBasedRecs.map((rec) => (
+                      <JobRecommendationCard
+                        key={rec.job.id}
+                        recommendation={rec}
+                        isSelected={selectedJobId === rec.job.id}
+                        onSelect={() => handleSelectJob(rec.job.id)}
+                        disabled={isSelecting}
+                        category="goal_based"
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Skill-based recommendations */}
+              {skillBasedRecs && skillBasedRecs.length > 0 && (
+                <section>
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/40">
+                      <Briefcase className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-semibold text-foreground">Based on Your Skills</h2>
+                      <p className="text-xs text-muted-foreground">Careers that leverage your existing experience</p>
+                    </div>
+                  </div>
+                  <div className="grid gap-4">
+                    {skillBasedRecs.map((rec) => (
+                      <JobRecommendationCard
+                        key={rec.job.id}
+                        recommendation={rec}
+                        isSelected={selectedJobId === rec.job.id}
+                        onSelect={() => handleSelectJob(rec.job.id)}
+                        disabled={isSelecting}
+                        category="skill_based"
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Fallback: Show flat list if categories not available */}
+              {!goalBasedRecs?.length && !skillBasedRecs?.length && recommendations && (
+                <div className="grid gap-4">
+                  {recommendations.map((rec) => (
+                    <JobRecommendationCard
+                      key={rec.job.id}
+                      recommendation={rec}
+                      isSelected={selectedJobId === rec.job.id}
+                      onSelect={() => handleSelectJob(rec.job.id)}
+                      disabled={isSelecting}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <aside className="mt-8 lg:mt-0 lg:sticky lg:top-6 h-fit space-y-4">
+              {/* Prominent Explore All Roles CTA */}
+              <Card className="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/40 dark:to-red-950/40 border-orange-200 dark:border-orange-800">
+                <CardContent className="p-6">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-red-600 shrink-0">
+                        <Compass className="h-5 w-5 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-foreground">
+                          Want to explore more options?
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          See all cybersecurity roles with detailed skill matching
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      asChild
+                      size="lg"
+                      className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white shadow-md"
+                    >
+                      <Link href="/onboarding/explore">
+                        <Compass className="h-4 w-4 mr-2" />
+                        Explore All Roles
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Continue button */}
+              <Card className="border-slate-200/70 dark:border-slate-800/70">
+                <CardContent className="p-5">
+                  <div className="flex flex-col items-center gap-3">
+                    <Button
+                      size="lg"
+                      onClick={handleContinue}
+                      disabled={!selectedJobId || isSelecting}
+                      className="w-full h-12 text-base font-semibold bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 shadow-lg"
+                    >
+                      {isSelecting ? (
+                        <span className="flex items-center gap-2">
+                          <span className="h-4 w-4 border-2 border-current/30 border-t-current rounded-full animate-spin" />
+                          Processing...
+                        </span>
+                      ) : (
+                        'Continue with Selected Career'
+                      )}
+                    </Button>
+                    {!selectedJobId && (
+                      <p className="text-sm text-muted-foreground">
+                        Select a career above to continue
+                      </p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </aside>
           </div>
         ) : !isLoading ? (
           <div className="text-center py-12">
@@ -167,41 +284,8 @@ export default function RecommendationsPage() {
               <Link href="/onboarding">Update Your Profile</Link>
             </Button>
           </div>
-        ) : (
-          <div className="grid gap-6">
-            <JobCardSkeleton />
-            <JobCardSkeleton />
-            <JobCardSkeleton />
-          </div>
-        )}
-
-        {/* Continue button */}
-        {recommendations && recommendations.length > 0 && (
-          <div className="mt-8 flex flex-col items-center gap-4">
-            <Button
-              size="lg"
-              onClick={handleContinue}
-              disabled={!selectedJobId || isSelecting}
-              className="w-full md:w-auto min-w-[300px] h-14 text-lg font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white shadow-lg shadow-cyan-500/25"
-            >
-              {isSelecting ? (
-                <span className="flex items-center gap-2">
-                  <span className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Processing...
-                </span>
-              ) : (
-                'Continue with Selected Career'
-              )}
-            </Button>
-            {!selectedJobId && (
-              <p className="text-sm text-muted-foreground">
-                Select a career path above to continue
-              </p>
-            )}
-          </div>
-        )}
+        ) : null}
       </div>
     </div>
   );
 }
-

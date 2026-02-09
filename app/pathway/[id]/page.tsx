@@ -59,7 +59,7 @@ export default function PathwayPage() {
 
   if (isLoading && !pathway) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-orange-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
         <div className="container mx-auto px-6 py-12">
           <div className="max-w-4xl mx-auto space-y-6">
             <PathwayCourseCardSkeleton />
@@ -74,7 +74,7 @@ export default function PathwayPage() {
 
   if (error || !pathway) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-orange-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
         <div className="container mx-auto px-6 py-12">
           <div className="max-w-md mx-auto text-center">
             <h1 className="text-2xl font-bold text-foreground mb-4">Pathway Not Found</h1>
@@ -90,23 +90,34 @@ export default function PathwayPage() {
     );
   }
 
-  const totalWeeks = pathway.cyberpath_courses.reduce(
-    (sum, course) => sum + course.week_count,
-    0
-  );
+  const isTopicMode = pathway.generation_mode === 'topic';
 
-  const completedWeeks = pathway.cyberpath_courses.reduce(
-    (sum, course) =>
-      sum + course.weeks.filter((w) => w.progress?.status === 'completed').length,
-    0
-  );
+  const totalItems = isTopicMode
+    ? pathway.cyberpath_courses.reduce((sum, course) => sum + (course.topics?.length ?? 0), 0)
+    : pathway.cyberpath_courses.reduce((sum, course) => sum + course.week_count, 0);
 
-  const firstIncompleteWeek = pathway.cyberpath_courses
-    .flatMap((course) => course.weeks)
-    .find((week) => week.progress?.status !== 'completed');
+  const completedItems = isTopicMode
+    ? pathway.cyberpath_courses.reduce(
+        (sum, course) =>
+          sum + (course.topics?.filter((t) => t.progress?.status === 'completed').length ?? 0),
+        0
+      )
+    : pathway.cyberpath_courses.reduce(
+        (sum, course) =>
+          sum + course.weeks.filter((w) => w.progress?.status === 'completed').length,
+        0
+      );
+
+  const hasIncompleteItem = isTopicMode
+    ? pathway.cyberpath_courses
+        .flatMap((course) => course.topics ?? [])
+        .some((topic) => topic.progress?.status !== 'completed')
+    : pathway.cyberpath_courses
+        .flatMap((course) => course.weeks)
+        .some((week) => week.progress?.status !== 'completed');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-orange-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Background grid */}
       <div className="fixed inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.02] dark:opacity-[0.05] pointer-events-none" />
 
@@ -123,9 +134,14 @@ export default function PathwayPage() {
 
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
             <div>
-              <Badge className="mb-3 bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300 border-0">
-                {pathway.course_mode === 'parallel' ? 'Parallel Learning' : 'Sequential Learning'}
-              </Badge>
+              <div className="flex items-center gap-2 mb-3">
+                <Badge className="bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300 border-0">
+                  {pathway.course_mode === 'parallel' ? 'Parallel Learning' : 'Sequential Learning'}
+                </Badge>
+                <Badge className="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300 border-0">
+                  {isTopicMode ? 'Topic-Based' : 'Lesson-Based'}
+                </Badge>
+              </div>
               <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
                 Your Learning Pathway
               </h1>
@@ -138,10 +154,10 @@ export default function PathwayPage() {
             </div>
 
             {/* Quick start button */}
-            {firstIncompleteWeek && (
+            {hasIncompleteItem && (
               <Button
                 size="lg"
-                className="shrink-0 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white"
+                className="shrink-0 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white"
               >
                 <Play className="mr-2 h-5 w-5" />
                 Continue Learning
@@ -155,8 +171,8 @@ export default function PathwayPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Card>
               <CardContent className="p-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-100 dark:bg-cyan-900/40">
-                  <Target className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100 dark:bg-orange-900/40">
+                  <Target className="h-5 w-5 text-orange-600 dark:text-orange-400" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-foreground">
@@ -188,9 +204,11 @@ export default function PathwayPage() {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-foreground">
-                    {completedWeeks}/{totalWeeks}
+                    {completedItems}/{totalItems}
                   </p>
-                  <p className="text-xs text-muted-foreground">Weeks</p>
+                  <p className="text-xs text-muted-foreground">
+                    {isTopicMode ? 'Topics' : 'Weeks'}
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -201,10 +219,21 @@ export default function PathwayPage() {
                   <TrendingUp className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-foreground">
-                    {pathway.tks_gap_count}
-                  </p>
-                  <p className="text-xs text-muted-foreground">Skills</p>
+                  {isTopicMode && pathway.ks_coverage_percentage != null ? (
+                    <>
+                      <p className="text-2xl font-bold text-foreground">
+                        {Math.round(pathway.ks_coverage_percentage * 100)}%
+                      </p>
+                      <p className="text-xs text-muted-foreground">KS Coverage</p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-2xl font-bold text-foreground">
+                        {pathway.tks_gap_count}
+                      </p>
+                      <p className="text-xs text-muted-foreground">Skills Gap</p>
+                    </>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -217,13 +246,13 @@ export default function PathwayPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold text-foreground">Overall Progress</h3>
-                <span className="text-sm font-medium text-cyan-600 dark:text-cyan-400">
+                <span className="text-sm font-medium text-orange-600 dark:text-orange-400">
                   {pathway.completion_percentage}%
                 </span>
               </div>
               <div className="h-3 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 transition-all duration-500"
+                  className="h-full rounded-full bg-gradient-to-r from-orange-500 to-red-600 transition-all duration-500"
                   style={{ width: `${pathway.completion_percentage}%` }}
                 />
               </div>

@@ -38,7 +38,24 @@ export function useApi() {
     [getToken]
   );
 
-  return { fetchWithAuth, fetchWithAuthAndMeta, getToken };
+  // Public endpoint (no auth required)
+  const fetchPublic = useCallback(
+    async <T>(
+      endpoint: string,
+      options: {
+        method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+        body?: unknown;
+        params?: Record<string, string | number | boolean | undefined>;
+      } = {}
+    ): Promise<T> => {
+      return apiRequest<T>(endpoint, options);
+    },
+    []
+  );
+
+  return { fetchWithAuth, fetchWithAuthAndMeta, fetchPublic, getToken };
 }
+
+
 
 

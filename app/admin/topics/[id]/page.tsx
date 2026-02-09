@@ -16,7 +16,7 @@ import {
 import { PageHeader, PageLoader } from '@/components/shared';
 import { useTopic, useDeleteTopic } from '@/hooks/use-topics';
 import { DeleteConfirmDialog } from '@/components/admin/delete-confirm-dialog';
-import { Pencil, Trash2, Calendar, Brain, ArrowRight, ArrowLeft, BookMarked } from 'lucide-react';
+import { Pencil, Trash2, Calendar, Brain, ArrowRight, ArrowLeft, BookMarked, BookOpen } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { TKSCategory } from '@/types';
@@ -220,6 +220,58 @@ export default function TopicDetailPage() {
               </CardContent>
             </Card>
           )}
+
+          {/* Course Weeks */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpen className="h-5 w-5" />
+                Course Weeks
+              </CardTitle>
+              <CardDescription>
+                Course weeks where this topic is taught
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {topic.course_weeks && topic.course_weeks.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Course</TableHead>
+                      <TableHead>Week</TableHead>
+                      <TableHead>Title</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {topic.course_weeks.map((cw) => (
+                      <TableRow key={cw.id}>
+                        <TableCell>
+                          {cw.course ? (
+                            <Link
+                              href={`/admin/courses/${cw.course.id}`}
+                              className="hover:text-primary"
+                            >
+                              {cw.course.course_code} - {cw.course.course_name}
+                            </Link>
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="font-mono text-sm">
+                          Week {cw.week_number}
+                        </TableCell>
+                        <TableCell>{cw.title}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <p className="text-muted-foreground text-center py-8">
+                  Not used in any course week yet.
+                </p>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
         {/* Sidebar */}

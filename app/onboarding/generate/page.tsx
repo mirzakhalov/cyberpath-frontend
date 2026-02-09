@@ -103,8 +103,17 @@ export default function GeneratePathwayPage() {
             </h1>
             
             <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
-              We've created a personalized {pathway.total_weeks}-week learning journey 
-              to help you become a {selectedJob.title}.
+              {pathway.generation_mode === 'topic' ? (
+                <>
+                  We&apos;ve created a personalized {pathway.cyberpath_courses.reduce((sum, c) => sum + (c.topics?.length ?? 0), 0)}-topic learning journey
+                  to help you become a {selectedJob.title}.
+                </>
+              ) : (
+                <>
+                  We&apos;ve created a personalized {pathway.total_weeks}-week learning journey
+                  to help you become a {selectedJob.title}.
+                </>
+              )}
             </p>
 
             {/* Pathway stats */}
@@ -119,18 +128,22 @@ export default function GeneratePathwayPage() {
               </div>
               <div className="text-center p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50">
                 <p className="text-2xl font-bold text-foreground">
-                  {pathway.total_weeks}
+                  {pathway.generation_mode === 'topic'
+                    ? pathway.cyberpath_courses.reduce((sum, c) => sum + (c.topics?.length ?? 0), 0)
+                    : pathway.total_weeks}
                 </p>
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">
-                  Weeks
+                  {pathway.generation_mode === 'topic' ? 'Topics' : 'Weeks'}
                 </p>
               </div>
               <div className="text-center p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50">
                 <p className="text-2xl font-bold text-foreground">
-                  {pathway.tks_gap_count}
+                  {pathway.generation_mode === 'topic' && pathway.ks_coverage_percentage != null
+                    ? `${Math.round(pathway.ks_coverage_percentage * 100)}%`
+                    : pathway.tks_gap_count}
                 </p>
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">
-                  Skills
+                  {pathway.generation_mode === 'topic' ? 'KS Coverage' : 'Skills Gap'}
                 </p>
               </div>
             </div>
@@ -138,7 +151,7 @@ export default function GeneratePathwayPage() {
             <Button
               size="lg"
               onClick={handleViewPathway}
-              className="h-14 px-10 text-lg font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white shadow-lg shadow-cyan-500/25"
+              className="h-14 px-10 text-lg font-semibold bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white shadow-lg shadow-orange-500/25"
             >
               View My Learning Pathway
             </Button>
@@ -175,7 +188,7 @@ export default function GeneratePathwayPage() {
               <Button
                 size="lg"
                 onClick={handleRetry}
-                className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white"
+                className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white"
               >
                 Try Again
               </Button>

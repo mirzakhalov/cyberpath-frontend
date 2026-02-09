@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CyberPath Admin",
-  description: "Admin dashboard for CyberPath - Cybersecurity Career Guidance Platform",
+  title: "SkillBit CyberPath",
+  description: "SkillBit CyberPath - Cybersecurity Career Guidance Platform",
 };
 
 export default function RootLayout({

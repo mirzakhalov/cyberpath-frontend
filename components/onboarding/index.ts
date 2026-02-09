@@ -3,4 +3,17 @@ export * from './job-recommendation-card';
 export * from './pathway-course-card';
 export * from './onboarding-progress';
 export * from './loading-states';
-
+export * from './job-explore-table';
+export * from './job-preview-modal';
+export * from './skill-progress-ring';
+export * from './skill-badge-list';
+export * from './job-explore-card';
+export * from './job-explore-grid';
+export * from './explore-filter-chips';
+export * from './match-score-orbit';
+export * from './role-micro-story';
+export * from './role-constellation';
+export * from './role-compare-rail';
+export * from './role-list-item';
+export * from './role-list-panel';
+export * from './role-detail-panel';

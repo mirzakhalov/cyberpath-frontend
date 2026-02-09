@@ -26,18 +26,20 @@ export interface UseOnboardingReturn {
   desiredJob: string;
   hasResume: boolean;
   recommendations: JobRecommendation[] | null;
+  goalBasedRecs: JobRecommendation[] | null;
+  skillBasedRecs: JobRecommendation[] | null;
   overallAnalysis: string | null;
   selectedJob: OnboardingJob | null;
   pathway: Pathway | null;
   isLoading: boolean;
   isInitialized: boolean;
   error: OnboardingError | null;
-  
+
   // Actions
   startSession: (desiredJob: string, resumeFile?: File, resumeText?: string) => Promise<void>;
   fetchRecommendations: (desiredJob?: string) => Promise<void>;
   selectJobForPathway: (jobId: string) => Promise<void>;
-  generateUserPathway: (courseMode?: 'parallel' | 'sequential') => Promise<void>;
+  generateUserPathway: (courseMode?: 'parallel' | 'sequential', generationMode?: 'topic' | 'lesson') => Promise<void>;
   fetchPathway: (pathwayId: string) => Promise<void>;
   clearError: () => void;
   resetOnboarding: () => void;
@@ -51,6 +53,8 @@ export function useOnboarding(): UseOnboardingReturn {
   const [desiredJob, setDesiredJob] = useState<string>('');
   const [hasResume, setHasResume] = useState<boolean>(false);
   const [recommendations, setRecommendations] = useState<JobRecommendation[] | null>(null);
+  const [goalBasedRecs, setGoalBasedRecs] = useState<JobRecommendation[] | null>(null);
+  const [skillBasedRecs, setSkillBasedRecs] = useState<JobRecommendation[] | null>(null);
   const [overallAnalysis, setOverallAnalysis] = useState<string | null>(null);
   const [selectedJob, setSelectedJob] = useState<OnboardingJob | null>(null);
   const [pathway, setPathway] = useState<Pathway | null>(null);
@@ -137,6 +141,8 @@ export function useOnboarding(): UseOnboardingReturn {
       
       if (response.success && response.data) {
         setRecommendations(response.data.recommendations);
+        setGoalBasedRecs(response.data.goal_based || []);
+        setSkillBasedRecs(response.data.skill_based || []);
         setOverallAnalysis(response.data.overall_analysis);
       }
     } catch (err) {
@@ -189,7 +195,8 @@ export function useOnboarding(): UseOnboardingReturn {
 
   // Generate pathway (requires auth)
   const generateUserPathway = useCallback(async (
-    courseMode: 'parallel' | 'sequential' = 'parallel'
+    courseMode: 'parallel' | 'sequential' = 'parallel',
+    generationMode: 'topic' | 'lesson' = 'topic'
   ) => {
     if (!selectedJob) {
       setError({
@@ -216,7 +223,7 @@ export function useOnboarding(): UseOnboardingReturn {
         throw { code: 'FORBIDDEN', message: 'Unable to get authentication token' };
       }
 
-      const response = await generatePathway(token, selectedJob.id, desiredJob, courseMode);
+      const response = await generatePathway(token, selectedJob.id, desiredJob, courseMode, generationMode);
       
       if (response.success && response.data) {
         setPathway(response.data.pathway);
@@ -259,9 +266,9 @@ export function useOnboarding(): UseOnboardingReturn {
       }
 
       const response = await getPathway(token, pathwayId);
-      
+
       if (response.success && response.data) {
-        setPathway(response.data.pathway);
+        setPathway(response.data);
       }
     } catch (err) {
       const onboardingError = err as OnboardingError;
@@ -303,13 +310,15 @@ export function useOnboarding(): UseOnboardingReturn {
     desiredJob,
     hasResume,
     recommendations,
+    goalBasedRecs,
+    skillBasedRecs,
     overallAnalysis,
     selectedJob,
     pathway,
     isLoading,
     isInitialized,
     error,
-    
+
     // Actions
     startSession,
     fetchRecommendations,

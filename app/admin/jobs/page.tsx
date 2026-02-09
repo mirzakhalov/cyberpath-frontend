@@ -17,8 +17,16 @@ import { DataTable } from '@/components/admin/data-table';
 import { DeleteConfirmDialog } from '@/components/admin/delete-confirm-dialog';
 import { PageHeader, EmptyState } from '@/components/shared';
 import { useJobs, useDeleteJob } from '@/hooks/use-jobs';
+import { useCareerDomains } from '@/hooks/use-career-domains';
 import { Job } from '@/types';
 import { toast } from 'sonner';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 function formatSalary(min?: number, max?: number): string {
   if (!min && !max) return '-';
@@ -39,8 +47,10 @@ export default function JobsListPage() {
   const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [careerDomainFilter, setCareerDomainFilter] = useState<string>('all');
 
   const { data, isLoading } = useJobs();
+  const { data: careerDomainsData } = useCareerDomains();
   const deleteMutation = useDeleteJob();
 
   const handleDelete = async () => {
@@ -68,6 +78,19 @@ export default function JobsListPage() {
           {row.original.title}
         </Link>
       ),
+    },
+    {
+      accessorKey: 'career_domain',
+      header: 'Career Domain',
+      cell: ({ row }) => {
+        const domain = row.original.career_domain;
+        if (!domain) return <span className="text-muted-foreground">-</span>;
+        return (
+          <Badge variant="outline">
+            {domain.code}
+          </Badge>
+        );
+      },
     },
     {
       accessorKey: 'cluster_count',
@@ -121,7 +144,12 @@ export default function JobsListPage() {
     },
   ];
 
-  const jobsData = data?.data ?? [];
+  const allJobsData = data?.data ?? [];
+
+  // Filter by career domain
+  const jobsData = careerDomainFilter === 'all'
+    ? allJobsData
+    : allJobsData.filter(job => job.career_domain_id === careerDomainFilter);
 
   return (
     <div>
@@ -133,12 +161,27 @@ export default function JobsListPage() {
           { label: 'Jobs' },
         ]}
         actions={
-          <Link href="/admin/jobs/new">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Job
-            </Button>
-          </Link>
+          <div className="flex items-center gap-4">
+            <Select value={careerDomainFilter} onValueChange={setCareerDomainFilter}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Filter by domain" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Domains</SelectItem>
+                {(careerDomainsData ?? []).map((domain) => (
+                  <SelectItem key={domain.id} value={domain.id}>
+                    {domain.code} - {domain.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Link href="/admin/jobs/new">
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Job
+              </Button>
+            </Link>
+          </div>
         }
       />
 

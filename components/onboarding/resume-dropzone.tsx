@@ -100,8 +100,8 @@ export function ResumeDropzone({
           className={cn(
             'relative rounded-xl border-2 border-dashed transition-all duration-200 cursor-pointer',
             isDragActive
-              ? 'border-cyan-500 bg-cyan-50/50 dark:bg-cyan-950/20'
-              : 'border-slate-200 dark:border-slate-700 hover:border-cyan-400 hover:bg-slate-50/50 dark:hover:bg-slate-900/30',
+              ? 'border-orange-500 bg-orange-50/50 dark:bg-orange-950/20'
+              : 'border-slate-200 dark:border-slate-700 hover:border-orange-400 hover:bg-slate-50/50 dark:hover:bg-slate-900/30',
             disabled && 'opacity-50 cursor-not-allowed',
             error && 'border-destructive'
           )}
@@ -112,14 +112,14 @@ export function ResumeDropzone({
               className={cn(
                 'flex h-16 w-16 items-center justify-center rounded-2xl mb-4 transition-colors',
                 isDragActive
-                  ? 'bg-cyan-100 dark:bg-cyan-900/40'
+                  ? 'bg-orange-100 dark:bg-orange-900/40'
                   : 'bg-slate-100 dark:bg-slate-800'
               )}
             >
               <Upload
                 className={cn(
                   'h-8 w-8 transition-colors',
-                  isDragActive ? 'text-cyan-600 dark:text-cyan-400' : 'text-slate-400'
+                  isDragActive ? 'text-orange-600 dark:text-orange-400' : 'text-slate-400'
                 )}
               />
             </div>
@@ -144,4 +144,6 @@ export function ResumeDropzone({
     </div>
   );
 }
+
+
 

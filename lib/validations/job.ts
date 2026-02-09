@@ -7,6 +7,7 @@ export const jobSchema = z.object({
   salary_max: z.number().min(0, 'Salary must be positive').optional(),
   requirements: z.string().optional(),
   cluster_ids: z.array(z.string()).length(4, 'Exactly 4 clusters must be selected'),
+  career_domain_id: z.string().optional(),
 }).refine(
   (data) => {
     if (data.salary_min && data.salary_max) {

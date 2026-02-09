@@ -46,8 +46,8 @@ export function AnimatedLoadingMessage({
     <div className={cn('flex flex-col items-center gap-6', className)}>
       {/* Animated icon */}
       <div className="relative">
-        <div className="absolute inset-0 rounded-full bg-cyan-500/20 animate-ping" />
-        <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-blue-600">
+        <div className="absolute inset-0 rounded-full bg-orange-500/20 animate-ping" />
+        <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-red-600">
           <CurrentIcon className="h-10 w-10 text-white animate-pulse" />
         </div>
       </div>
@@ -70,9 +70,9 @@ export function AnimatedLoadingMessage({
             className={cn(
               'h-2 w-2 rounded-full transition-all duration-300',
               index === currentIndex
-                ? 'bg-cyan-500 w-4'
+                ? 'bg-orange-500 w-4'
                 : index < currentIndex
-                ? 'bg-cyan-500'
+                ? 'bg-orange-500'
                 : 'bg-slate-300 dark:bg-slate-600'
             )}
           />
@@ -145,4 +145,6 @@ export function PathwayCourseCardSkeleton() {
     </div>
   );
 }
+
+
 
