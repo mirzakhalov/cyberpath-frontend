@@ -245,6 +245,26 @@ export interface TKSGapItem {
   importance: 'high' | 'medium' | 'low';
 }
 
+export interface TaskSummary {
+  teaser: string;
+  full_summary: string[];
+  task_count: number;
+}
+
+export interface KnowledgeItem {
+  code: string;
+  name: string;
+  has: boolean;
+  importance: 'high' | 'medium' | 'low';
+}
+
+export interface PreviewSkillItem {
+  code: string;
+  name: string;
+  has: boolean;
+  importance: 'high' | 'medium' | 'low';
+}
+
 export interface JobPreview {
   job: {
     id: string;
@@ -264,6 +284,9 @@ export interface JobPreview {
     knowledge: number;
     skill: number;
   };
+  task_summary?: TaskSummary | null;
+  knowledge_items?: KnowledgeItem[];
+  skill_items?: PreviewSkillItem[];
 }
 
 export interface ExploreJobsResponse {

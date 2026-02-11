@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Check, DollarSign, Briefcase, User } from 'lucide-react';
+import { useAuth } from '@clerk/nextjs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -28,7 +29,15 @@ function formatSalary(amount: number): string {
 
 export default function SelectJobPage() {
   const router = useRouter();
+  const { isSignedIn, isLoaded } = useAuth();
   const { selectedJob, sessionToken, isInitialized } = useOnboarding();
+
+  // If already signed in, skip straight to generate
+  useEffect(() => {
+    if (isLoaded && isSignedIn && isInitialized && selectedJob) {
+      router.push('/onboarding/generate');
+    }
+  }, [isLoaded, isSignedIn, isInitialized, selectedJob, router]);
 
   // Redirect if no selected job (only after initialized)
   useEffect(() => {
@@ -154,19 +163,19 @@ export default function SelectJobPage() {
               size="lg"
               className="h-12 text-base font-semibold bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white"
             >
-              <Link href="/sign-up">
+              <Link href="/sign-up?redirect_url=/onboarding/generate">
                 Create Account
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-            
+
             <Button
               asChild
               variant="outline"
               size="lg"
               className="h-12 text-base font-semibold"
             >
-              <Link href="/sign-in">
+              <Link href="/sign-in?redirect_url=/onboarding/generate">
                 I Already Have an Account
               </Link>
             </Button>

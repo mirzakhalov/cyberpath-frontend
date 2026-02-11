@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Lightbulb, Compass, Target, Briefcase } from 'lucide-react';
@@ -10,8 +10,9 @@ import {
   OnboardingProgress,
   JobRecommendationCard,
   RecommendationsLoading,
+  RoleDetailPanel,
 } from '@/components/onboarding';
-import { useOnboarding } from '@/hooks';
+import { useOnboarding, useJobExplore } from '@/hooks';
 import { toast } from 'sonner';
 
 const ONBOARDING_STEPS = [
@@ -38,6 +39,13 @@ export default function RecommendationsPage() {
     clearError,
   } = useOnboarding();
 
+  const {
+    selectedJobPreview,
+    isPreviewLoading,
+    fetchJobPreview,
+    clearPreview,
+  } = useJobExplore();
+
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   const [isSelecting, setIsSelecting] = useState(false);
   const [hasFetched, setHasFetched] = useState(false);
@@ -61,10 +69,15 @@ export default function RecommendationsPage() {
 
   const handleSelectJob = async (jobId: string) => {
     setSelectedJobId(jobId);
+    clearPreview();
+    fetchJobPreview(jobId, sessionToken).catch(() => {
+      // Preview is non-critical — card selection still works
+    });
   };
 
-  const handleContinue = async () => {
-    if (!selectedJobId) {
+  const handleContinue = async (jobId?: string) => {
+    const targetId = jobId || selectedJobId;
+    if (!targetId) {
       toast.error('Please select a career path to continue');
       return;
     }
@@ -73,7 +86,7 @@ export default function RecommendationsPage() {
     clearError();
 
     try {
-      await selectJobForPathway(selectedJobId);
+      await selectJobForPathway(targetId);
       router.push('/onboarding/select');
     } catch {
       toast.error(error?.message || 'Failed to select job. Please try again.');
@@ -85,6 +98,18 @@ export default function RecommendationsPage() {
   const hasRecommendations = (goalBasedRecs && goalBasedRecs.length > 0) ||
                              (skillBasedRecs && skillBasedRecs.length > 0) ||
                              (recommendations && recommendations.length > 0);
+
+  // Find the selected recommendation for the detail panel
+  const allRecs = useMemo(() => [
+    ...(goalBasedRecs ?? []),
+    ...(skillBasedRecs ?? []),
+    ...(recommendations ?? []),
+  ], [goalBasedRecs, skillBasedRecs, recommendations]);
+
+  const selectedRecommendation = useMemo(
+    () => allRecs.find((rec) => rec.job.id === selectedJobId) ?? null,
+    [allRecs, selectedJobId]
+  );
 
   // Show loading state while initializing or fetching
   if (!isInitialized || (isLoading && !hasRecommendations)) {
@@ -106,7 +131,7 @@ export default function RecommendationsPage() {
       </div>
 
       {/* Header */}
-      <div className="max-w-5xl mx-auto mb-6">
+      <div className="max-w-6xl mx-auto mb-6">
         <Link
           href="/onboarding"
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
@@ -125,7 +150,7 @@ export default function RecommendationsPage() {
 
       {/* Overall analysis - more compact */}
       {overallAnalysis && (
-        <div className="max-w-5xl mx-auto mb-6">
+        <div className="max-w-6xl mx-auto mb-6">
           <Card className="bg-gradient-to-br from-slate-50 to-orange-50/30 dark:from-slate-900 dark:to-orange-950/30 border-slate-200 dark:border-slate-800">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
@@ -140,9 +165,9 @@ export default function RecommendationsPage() {
       )}
 
       {/* Job recommendations - Two sections */}
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         {hasRecommendations ? (
-          <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-6">
+          <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-6">
             <div className="space-y-8">
               {/* Goal-based recommendations */}
               {goalBasedRecs && goalBasedRecs.length > 0 && (
@@ -215,6 +240,15 @@ export default function RecommendationsPage() {
             </div>
 
             <aside className="mt-8 lg:mt-0 lg:sticky lg:top-6 h-fit space-y-4">
+              {/* Role detail panel with TKS tabs */}
+              <RoleDetailPanel
+                recommendation={selectedRecommendation}
+                preview={selectedJobPreview}
+                isLoading={isPreviewLoading}
+                onSelectRole={handleContinue}
+                isSelecting={isSelecting}
+              />
+
               {/* Prominent Explore All Roles CTA */}
               <Card className="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/40 dark:to-red-950/40 border-orange-200 dark:border-orange-800">
                 <CardContent className="p-6">
@@ -242,34 +276,6 @@ export default function RecommendationsPage() {
                         Explore All Roles
                       </Link>
                     </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Continue button */}
-              <Card className="border-slate-200/70 dark:border-slate-800/70">
-                <CardContent className="p-5">
-                  <div className="flex flex-col items-center gap-3">
-                    <Button
-                      size="lg"
-                      onClick={handleContinue}
-                      disabled={!selectedJobId || isSelecting}
-                      className="w-full h-12 text-base font-semibold bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 shadow-lg"
-                    >
-                      {isSelecting ? (
-                        <span className="flex items-center gap-2">
-                          <span className="h-4 w-4 border-2 border-current/30 border-t-current rounded-full animate-spin" />
-                          Processing...
-                        </span>
-                      ) : (
-                        'Continue with Selected Career'
-                      )}
-                    </Button>
-                    {!selectedJobId && (
-                      <p className="text-sm text-muted-foreground">
-                        Select a career above to continue
-                      </p>
-                    )}
                   </div>
                 </CardContent>
               </Card>

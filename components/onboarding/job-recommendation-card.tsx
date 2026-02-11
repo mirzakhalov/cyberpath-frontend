@@ -1,6 +1,6 @@
 'use client';
 
-import { DollarSign, Target, TrendingUp, Sparkles, Briefcase } from 'lucide-react';
+import { DollarSign, Target, TrendingUp, Briefcase } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -25,17 +25,6 @@ function formatSalary(amount: number): string {
   }).format(amount);
 }
 
-function getMatchScoreColor(score: number): string {
-  if (score >= 80) return 'text-emerald-600 dark:text-emerald-400';
-  if (score >= 60) return 'text-amber-600 dark:text-amber-400';
-  return 'text-orange-600 dark:text-orange-400';
-}
-
-function getMatchScoreBg(score: number): string {
-  if (score >= 80) return 'bg-emerald-100 dark:bg-emerald-900/30';
-  if (score >= 60) return 'bg-amber-100 dark:bg-amber-900/30';
-  return 'bg-orange-100 dark:bg-orange-900/30';
-}
 
 export function JobRecommendationCard({
   recommendation,
@@ -89,18 +78,6 @@ export function JobRecommendationCard({
                 )}
               </Badge>
             )}
-            {/* Match score */}
-            <div
-              className={cn(
-                'flex items-center gap-1 rounded-full px-2 py-0.5',
-                getMatchScoreBg(match_score)
-              )}
-            >
-              <Sparkles className={cn('h-3 w-3', getMatchScoreColor(match_score))} />
-              <span className={cn('text-xs font-bold', getMatchScoreColor(match_score))}>
-                {match_score.toFixed(0)}%
-              </span>
-            </div>
           </div>
           {/* Select button */}
           <Button

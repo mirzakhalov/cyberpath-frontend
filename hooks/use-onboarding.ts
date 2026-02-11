@@ -19,6 +19,7 @@ import type {
 const SESSION_STORAGE_KEY = 'cyberpath_session';
 const SELECTED_JOB_KEY = 'cyberpath_selected_job';
 const DESIRED_JOB_KEY = 'cyberpath_desired_job';
+const RECOMMENDATIONS_KEY = 'cyberpath_recommendations';
 
 export interface UseOnboardingReturn {
   // State
@@ -82,7 +83,20 @@ export function useOnboarding(): UseOnboardingReturn {
       if (storedDesiredJob) {
         setDesiredJob(storedDesiredJob);
       }
-      
+
+      const storedRecs = localStorage.getItem(RECOMMENDATIONS_KEY);
+      if (storedRecs) {
+        try {
+          const parsed = JSON.parse(storedRecs);
+          if (parsed.recommendations) setRecommendations(parsed.recommendations);
+          if (parsed.goalBasedRecs) setGoalBasedRecs(parsed.goalBasedRecs);
+          if (parsed.skillBasedRecs) setSkillBasedRecs(parsed.skillBasedRecs);
+          if (parsed.overallAnalysis) setOverallAnalysis(parsed.overallAnalysis);
+        } catch {
+          localStorage.removeItem(RECOMMENDATIONS_KEY);
+        }
+      }
+
       // Mark as initialized after loading from localStorage
       setIsInitialized(true);
     }
@@ -144,6 +158,14 @@ export function useOnboarding(): UseOnboardingReturn {
         setGoalBasedRecs(response.data.goal_based || []);
         setSkillBasedRecs(response.data.skill_based || []);
         setOverallAnalysis(response.data.overall_analysis);
+
+        // Cache recommendations so they survive navigation
+        localStorage.setItem(RECOMMENDATIONS_KEY, JSON.stringify({
+          recommendations: response.data.recommendations,
+          goalBasedRecs: response.data.goal_based || [],
+          skillBasedRecs: response.data.skill_based || [],
+          overallAnalysis: response.data.overall_analysis,
+        }));
       }
     } catch (err) {
       const onboardingError = err as OnboardingError;
@@ -232,6 +254,7 @@ export function useOnboarding(): UseOnboardingReturn {
         localStorage.removeItem(SESSION_STORAGE_KEY);
         localStorage.removeItem(SELECTED_JOB_KEY);
         localStorage.removeItem(DESIRED_JOB_KEY);
+        localStorage.removeItem(RECOMMENDATIONS_KEY);
       }
     } catch (err) {
       const onboardingError = err as OnboardingError;
@@ -302,6 +325,7 @@ export function useOnboarding(): UseOnboardingReturn {
     localStorage.removeItem(SESSION_STORAGE_KEY);
     localStorage.removeItem(SELECTED_JOB_KEY);
     localStorage.removeItem(DESIRED_JOB_KEY);
+    localStorage.removeItem(RECOMMENDATIONS_KEY);
   }, []);
 
   return {
