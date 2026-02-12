@@ -39,7 +39,7 @@ export interface UseOnboardingReturn {
   // Actions
   startSession: (desiredJob: string, resumeFile?: File, resumeText?: string) => Promise<void>;
   fetchRecommendations: (desiredJob?: string) => Promise<void>;
-  selectJobForPathway: (jobId: string) => Promise<void>;
+  selectJobForPathway: (jobId: string, extraFields?: Partial<OnboardingJob>) => Promise<void>;
   generateUserPathway: (courseMode?: 'parallel' | 'sequential', generationMode?: 'topic' | 'lesson') => Promise<void>;
   fetchPathway: (pathwayId: string) => Promise<void>;
   clearError: () => void;
@@ -181,7 +181,7 @@ export function useOnboarding(): UseOnboardingReturn {
   }, [sessionToken, desiredJob]);
 
   // Select a job
-  const selectJobForPathway = useCallback(async (jobId: string) => {
+  const selectJobForPathway = useCallback(async (jobId: string, extraFields?: Partial<OnboardingJob>) => {
     if (!sessionToken) {
       setError({
         code: 'NO_SESSION',
@@ -192,15 +192,16 @@ export function useOnboarding(): UseOnboardingReturn {
 
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await selectJob(sessionToken, jobId);
-      
+
       if (response.success && response.data) {
-        setSelectedJob(response.data.selected_job);
-        
+        const enrichedJob = { ...response.data.selected_job, ...extraFields };
+        setSelectedJob(enrichedJob);
+
         // Persist selected job
-        localStorage.setItem(SELECTED_JOB_KEY, JSON.stringify(response.data.selected_job));
+        localStorage.setItem(SELECTED_JOB_KEY, JSON.stringify(enrichedJob));
       }
     } catch (err) {
       const onboardingError = err as OnboardingError;

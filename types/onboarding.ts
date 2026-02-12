@@ -10,6 +10,7 @@ export interface OnboardingJob {
   salary_max: number;
   requirements: string;
   tks_count: number;
+  skills_need_count?: number;
   created_at?: string;
 }
 

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Check, DollarSign, Briefcase, User } from 'lucide-react';
 import { useAuth } from '@clerk/nextjs';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -97,23 +98,28 @@ export default function SelectJobPage() {
           
           <CardContent className="space-y-6">
             {/* Job details */}
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="flex items-center gap-3 p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                <DollarSign className="h-5 w-5 text-emerald-600" />
-                <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wide">Salary Range</p>
-                  <p className="text-sm font-semibold text-foreground">
-                    {formatSalary(selectedJob.salary_min)} - {formatSalary(selectedJob.salary_max)}
-                  </p>
+            <div className={cn(
+              'grid gap-4',
+              selectedJob.salary_min || selectedJob.salary_max ? 'md:grid-cols-2' : 'md:grid-cols-1'
+            )}>
+              {(selectedJob.salary_min > 0 || selectedJob.salary_max > 0) && (
+                <div className="flex items-center gap-3 p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                  <DollarSign className="h-5 w-5 text-emerald-600" />
+                  <div>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide">Salary Range</p>
+                    <p className="text-sm font-semibold text-foreground">
+                      {formatSalary(selectedJob.salary_min)} - {formatSalary(selectedJob.salary_max)}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              
+              )}
+
               <div className="flex items-center gap-3 p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50">
                 <Briefcase className="h-5 w-5 text-blue-600" />
                 <div>
                   <p className="text-xs text-muted-foreground uppercase tracking-wide">Skills to Learn</p>
                   <p className="text-sm font-semibold text-foreground">
-                    {selectedJob.tks_count} competencies
+                    {selectedJob.skills_need_count ?? selectedJob.tks_count} skills to develop
                   </p>
                 </div>
               </div>

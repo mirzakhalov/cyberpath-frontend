@@ -83,10 +83,10 @@ export function RoleDetailPanel({
   }
 
   // Unified header data
-  const jobId = jobSummary?.id ?? recommendation!.job.id;
-  const title = jobSummary?.title ?? recommendation!.job.title;
-  const salaryMin = jobSummary?.salary_min ?? recommendation!.job.salary_min;
-  const salaryMax = jobSummary?.salary_max ?? recommendation!.job.salary_max;
+  const jobId = jobSummary?.id ?? recommendation?.job.id ?? '';
+  const title = jobSummary?.title ?? recommendation?.job.title ?? '';
+  const salaryMin = jobSummary?.salary_min ?? recommendation?.job.salary_min;
+  const salaryMax = jobSummary?.salary_max ?? recommendation?.job.salary_max;
   const careerDomain = jobSummary?.career_domain ?? preview?.career_domain ?? null;
 
   // Explore-only derived data

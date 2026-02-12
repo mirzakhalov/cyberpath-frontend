@@ -86,7 +86,12 @@ export default function RecommendationsPage() {
     clearError();
 
     try {
-      await selectJobForPathway(targetId);
+      // Compute skill gap count from the preview data already loaded
+      const skillsNeedCount = selectedJobPreview?.skill_items
+        ? selectedJobPreview.skill_items.filter((s) => !s.has).length
+        : undefined;
+
+      await selectJobForPathway(targetId, skillsNeedCount != null ? { skills_need_count: skillsNeedCount } : undefined);
       router.push('/onboarding/select');
     } catch {
       toast.error(error?.message || 'Failed to select job. Please try again.');

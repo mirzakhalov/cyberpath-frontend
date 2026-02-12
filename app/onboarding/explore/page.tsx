@@ -181,7 +181,12 @@ export default function ExplorePage() {
     clearError();
 
     try {
-      await selectJobForPathway(jobId);
+      // Compute skill gap count from the preview data already loaded
+      const skillsNeedCount = selectedJobPreview?.skill_items
+        ? selectedJobPreview.skill_items.filter((s) => !s.has).length
+        : undefined;
+
+      await selectJobForPathway(jobId, skillsNeedCount != null ? { skills_need_count: skillsNeedCount } : undefined);
       toast.success('Career path selected!');
       router.push('/onboarding/select');
     } catch {
