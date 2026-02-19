@@ -40,7 +40,7 @@ export interface UseOnboardingReturn {
   startSession: (desiredJob: string, resumeFile?: File, resumeText?: string) => Promise<void>;
   fetchRecommendations: (desiredJob?: string) => Promise<void>;
   selectJobForPathway: (jobId: string, extraFields?: Partial<OnboardingJob>) => Promise<void>;
-  generateUserPathway: (courseMode?: 'parallel' | 'sequential', generationMode?: 'topic' | 'lesson') => Promise<void>;
+  generateUserPathway: (courseMode?: 'parallel' | 'sequential', generationMode?: 'topic' | 'lesson' | 'challenge') => Promise<void>;
   fetchPathway: (pathwayId: string) => Promise<void>;
   clearError: () => void;
   resetOnboarding: () => void;
@@ -219,7 +219,7 @@ export function useOnboarding(): UseOnboardingReturn {
   // Generate pathway (requires auth)
   const generateUserPathway = useCallback(async (
     courseMode: 'parallel' | 'sequential' = 'parallel',
-    generationMode: 'topic' | 'lesson' = 'topic'
+    generationMode: 'topic' | 'lesson' | 'challenge' = 'challenge'
   ) => {
     if (!selectedJob) {
       setError({

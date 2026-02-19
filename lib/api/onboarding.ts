@@ -131,7 +131,7 @@ export async function generatePathway(
   jobId: string,
   desiredGoals?: string,
   courseMode: 'parallel' | 'sequential' = 'parallel',
-  generationMode: 'topic' | 'lesson' = 'topic'
+  generationMode: 'topic' | 'lesson' | 'challenge' = 'topic'
 ): Promise<ApiResponse<import('@/types').GeneratePathwayResponse>> {
   return onboardingRequest('/onboarding/generate-pathway', {
     method: 'POST',

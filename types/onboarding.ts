@@ -126,15 +126,49 @@ export interface PathwayTopic {
   progress: PathwayTopicProgress;
 }
 
+export interface PathwayChallengeData {
+  id: string;
+  external_id: number;
+  title: string;
+  markdown_text: string;
+  category: string;
+  difficulty_estimate: number | null;
+  skills_summary: string | null;
+  tks_count: number;
+  tks?: {
+    code: string;
+    name: string;
+    category: string;
+    relevance_score: number;
+  }[];
+}
+
+export interface PathwayChallengeProgress {
+  id: string;
+  status: 'not_started' | 'in_progress' | 'completed' | 'skipped';
+  started_at: string | null;
+  completed_at: string | null;
+}
+
+export interface PathwayChallenge {
+  id: string;
+  sequence_order: number;
+  challenge_id: string;
+  challenge: PathwayChallengeData;
+  progress: PathwayChallengeProgress;
+}
+
 export interface CyberpathCourse {
   id: string;
   course_number: number;
   title: string;
   week_count: number;
   topic_count: number;
+  challenge_count: number;
   completion_percentage: number;
   weeks: PathwayWeek[];
   topics: PathwayTopic[];
+  challenges: PathwayChallenge[];
 }
 
 export interface KsCoverageDetails {
@@ -148,7 +182,7 @@ export interface Pathway {
   user_id: string;
   selected_job_id: string;
   course_mode: 'parallel' | 'sequential';
-  generation_mode: 'topic' | 'lesson';
+  generation_mode: 'topic' | 'lesson' | 'challenge';
   match_score: number | null;
   total_required_tks: number;
   existing_competencies_count: number;

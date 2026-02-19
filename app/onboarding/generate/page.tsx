@@ -50,7 +50,7 @@ export default function GeneratePathwayPage() {
   useEffect(() => {
     if (isInitialized && isSignedIn && selectedJob && !hasStarted && !pathway) {
       setHasStarted(true);
-      generateUserPathway('parallel')
+      generateUserPathway('parallel', 'challenge')
         .then(() => {
           setIsComplete(true);
         })
@@ -103,7 +103,12 @@ export default function GeneratePathwayPage() {
             </h1>
             
             <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
-              {pathway.generation_mode === 'topic' ? (
+              {pathway.generation_mode === 'challenge' ? (
+                <>
+                  We&apos;ve created a personalized {pathway.cyberpath_courses.reduce((sum, c) => sum + (c.challenges?.length ?? 0), 0)}-challenge hands-on pathway
+                  to help you become a {selectedJob.title}.
+                </>
+              ) : pathway.generation_mode === 'topic' ? (
                 <>
                   We&apos;ve created a personalized {pathway.cyberpath_courses.reduce((sum, c) => sum + (c.topics?.length ?? 0), 0)}-topic learning journey
                   to help you become a {selectedJob.title}.
@@ -128,12 +133,14 @@ export default function GeneratePathwayPage() {
               </div>
               <div className="text-center p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50">
                 <p className="text-2xl font-bold text-foreground">
-                  {pathway.generation_mode === 'topic'
+                  {pathway.generation_mode === 'challenge'
+                    ? pathway.cyberpath_courses.reduce((sum, c) => sum + (c.challenges?.length ?? 0), 0)
+                    : pathway.generation_mode === 'topic'
                     ? pathway.cyberpath_courses.reduce((sum, c) => sum + (c.topics?.length ?? 0), 0)
                     : pathway.total_weeks}
                 </p>
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">
-                  {pathway.generation_mode === 'topic' ? 'Topics' : 'Weeks'}
+                  {pathway.generation_mode === 'challenge' ? 'Challenges' : pathway.generation_mode === 'topic' ? 'Topics' : 'Weeks'}
                 </p>
               </div>
               <div className="text-center p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50">

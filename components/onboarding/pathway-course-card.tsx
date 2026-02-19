@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { BookOpen, Clock, GraduationCap, ChevronDown, ChevronUp, CheckCircle2, Layers } from 'lucide-react';
+import { BookOpen, Clock, GraduationCap, ChevronDown, ChevronUp, CheckCircle2, Layers, Shield, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -24,18 +24,54 @@ function getCourseColor(courseNumber: number): { bg: string; text: string; borde
 }
 
 /**
- * Detect whether this course uses topic mode or lesson (week) mode.
- * Topic mode: topics array is populated, week_count is 0.
- * Lesson mode: weeks array is populated.
+ * Detect the course rendering mode: challenge, topic, or lesson (week).
  */
+function isChallengeMode(course: CyberpathCourse): boolean {
+  return (course.challenges?.length > 0) || (course.challenge_count > 0 && course.week_count === 0 && course.topic_count === 0);
+}
+
 function isTopicMode(course: CyberpathCourse): boolean {
   return (course.topics?.length > 0) || (course.topic_count > 0 && course.week_count === 0);
+}
+
+const challengeCategoryColors: Record<string, string> = {
+  'Cryptography': 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
+  'Web Exploitation': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+  'Forensics': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
+  'Reverse Engineering': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300',
+  'Reconnaissance': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300',
+  'Binary Exploitation': 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
+  'Other': 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-300',
+};
+
+function DifficultyDots({ level }: { level: number | null }) {
+  if (!level) return null;
+  return (
+    <div className="flex items-center gap-0.5" title={`Difficulty: ${level}/5`}>
+      {Array.from({ length: 5 }, (_, i) => (
+        <div
+          key={i}
+          className={cn(
+            'h-1.5 w-1.5 rounded-full',
+            i < level ? 'bg-amber-500' : 'bg-slate-200 dark:bg-slate-700'
+          )}
+        />
+      ))}
+    </div>
+  );
 }
 
 export function PathwayCourseCard({ course, className }: PathwayCourseCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const colors = getCourseColor(course.course_number);
-  const topicMode = isTopicMode(course);
+  const challengeMode = isChallengeMode(course);
+  const topicMode = !challengeMode && isTopicMode(course);
+
+  // --- Challenge mode calculations ---
+  const completedChallenges = challengeMode
+    ? (course.challenges?.filter((c) => c.progress?.status === 'completed').length ?? 0)
+    : 0;
+  const totalChallenges = challengeMode ? (course.challenges?.length ?? 0) : 0;
 
   // --- Topic mode calculations ---
   const completedTopics = topicMode
@@ -44,20 +80,20 @@ export function PathwayCourseCard({ course, className }: PathwayCourseCardProps)
   const totalTopics = topicMode ? (course.topics?.length ?? 0) : 0;
 
   // --- Lesson mode calculations ---
-  const totalHours = topicMode
+  const totalHours = (topicMode || challengeMode)
     ? 0
     : course.weeks.reduce(
         (sum, week) => sum + (week.course_week?.estimated_hours || 0),
         0
       );
-  const completedWeeks = topicMode
+  const completedWeeks = (topicMode || challengeMode)
     ? 0
     : course.weeks.filter((week) => week.progress?.status === 'completed').length;
 
-  const itemCount = topicMode ? totalTopics : course.week_count;
-  const completedCount = topicMode ? completedTopics : completedWeeks;
-  const itemLabel = topicMode ? 'topics' : 'lessons';
-  const expandLabel = topicMode ? 'topics' : 'lessons';
+  const itemCount = challengeMode ? totalChallenges : topicMode ? totalTopics : course.week_count;
+  const completedCount = challengeMode ? completedChallenges : topicMode ? completedTopics : completedWeeks;
+  const itemLabel = challengeMode ? 'challenges' : topicMode ? 'topics' : 'lessons';
+  const expandLabel = itemLabel;
 
   return (
     <Card className={cn('relative overflow-hidden', className)}>
@@ -90,7 +126,9 @@ export function PathwayCourseCard({ course, className }: PathwayCourseCardProps)
               </CardTitle>
               <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1">
-                  {topicMode ? (
+                  {challengeMode ? (
+                    <Shield className="h-3.5 w-3.5" />
+                  ) : topicMode ? (
                     <Layers className="h-3.5 w-3.5" />
                   ) : (
                     <BookOpen className="h-3.5 w-3.5" />
@@ -128,7 +166,114 @@ export function PathwayCourseCard({ course, className }: PathwayCourseCardProps)
       </CardHeader>
 
       <CardContent className="pt-0 pl-6">
-        {topicMode ? (
+        {challengeMode ? (
+          // --- Challenge mode ---
+          course.challenges?.length > 0 && (
+            <>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="w-full justify-between text-muted-foreground hover:text-foreground -ml-2 mb-2"
+              >
+                <span className="text-sm font-medium">
+                  {isExpanded ? `Hide ${expandLabel}` : `View ${expandLabel}`}
+                </span>
+                {isExpanded ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </Button>
+
+              {isExpanded && (
+                <div className="space-y-2 mt-2 max-h-[400px] overflow-y-auto pr-2">
+                  {course.challenges
+                    .slice()
+                    .sort((a, b) => a.sequence_order - b.sequence_order)
+                    .map((challengeEntry) => (
+                      <div
+                        key={challengeEntry.id}
+                        className={cn(
+                          'flex items-start gap-3 p-3 rounded-lg transition-colors',
+                          challengeEntry.progress?.status === 'completed'
+                            ? 'bg-emerald-50/50 dark:bg-emerald-950/20'
+                            : challengeEntry.progress?.status === 'in_progress'
+                            ? 'bg-orange-50/50 dark:bg-orange-950/20'
+                            : 'bg-slate-50 dark:bg-slate-900/50'
+                        )}
+                      >
+                        {/* Status indicator */}
+                        <div className="mt-0.5">
+                          {challengeEntry.progress?.status === 'completed' ? (
+                            <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                          ) : challengeEntry.progress?.status === 'in_progress' ? (
+                            <div className="h-5 w-5 rounded-full border-2 border-orange-500 flex items-center justify-center">
+                              <div className="h-2 w-2 rounded-full bg-orange-500" />
+                            </div>
+                          ) : (
+                            <div className="h-5 w-5 rounded-full border-2 border-slate-300 dark:border-slate-600" />
+                          )}
+                        </div>
+
+                        {/* Challenge content */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs font-medium text-muted-foreground">
+                              Challenge {challengeEntry.sequence_order}
+                            </span>
+                            <DifficultyDots level={challengeEntry.challenge.difficulty_estimate} />
+                          </div>
+                          <h4 className="text-sm font-medium text-foreground">
+                            {challengeEntry.challenge.title}
+                          </h4>
+
+                          {/* Category badge + skills summary */}
+                          <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                            <Badge
+                              className={cn(
+                                'text-xs py-0 h-5 border-0',
+                                challengeCategoryColors[challengeEntry.challenge.category] || challengeCategoryColors['Other']
+                              )}
+                            >
+                              {challengeEntry.challenge.category}
+                            </Badge>
+                          </div>
+
+                          {challengeEntry.challenge.skills_summary && (
+                            <p className="text-xs text-muted-foreground mt-1.5 line-clamp-2">
+                              {challengeEntry.challenge.skills_summary}
+                            </p>
+                          )}
+
+                          {/* TKS badges */}
+                          {challengeEntry.challenge.tks && challengeEntry.challenge.tks.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              {challengeEntry.challenge.tks.slice(0, 3).map((tks) => (
+                                <Badge
+                                  key={tks.code}
+                                  variant="outline"
+                                  className="text-xs py-0 h-5"
+                                >
+                                  {tks.code}
+                                </Badge>
+                              ))}
+                              {challengeEntry.challenge.tks.length > 3 && (
+                                <Badge variant="outline" className="text-xs py-0 h-5 text-muted-foreground">
+                                  +{challengeEntry.challenge.tks.length - 3}
+                                </Badge>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              )}
+            </>
+          )
+        ) : topicMode ? (
           // --- Topic mode ---
           course.topics?.length > 0 && (
             <>

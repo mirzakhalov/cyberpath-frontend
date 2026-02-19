@@ -91,12 +91,21 @@ export default function PathwayPage() {
   }
 
   const isTopicMode = pathway.generation_mode === 'topic';
+  const isChallengeMode = pathway.generation_mode === 'challenge';
 
-  const totalItems = isTopicMode
+  const totalItems = isChallengeMode
+    ? pathway.cyberpath_courses.reduce((sum, course) => sum + (course.challenges?.length ?? 0), 0)
+    : isTopicMode
     ? pathway.cyberpath_courses.reduce((sum, course) => sum + (course.topics?.length ?? 0), 0)
     : pathway.cyberpath_courses.reduce((sum, course) => sum + course.week_count, 0);
 
-  const completedItems = isTopicMode
+  const completedItems = isChallengeMode
+    ? pathway.cyberpath_courses.reduce(
+        (sum, course) =>
+          sum + (course.challenges?.filter((c) => c.progress?.status === 'completed').length ?? 0),
+        0
+      )
+    : isTopicMode
     ? pathway.cyberpath_courses.reduce(
         (sum, course) =>
           sum + (course.topics?.filter((t) => t.progress?.status === 'completed').length ?? 0),
@@ -108,7 +117,11 @@ export default function PathwayPage() {
         0
       );
 
-  const hasIncompleteItem = isTopicMode
+  const hasIncompleteItem = isChallengeMode
+    ? pathway.cyberpath_courses
+        .flatMap((course) => course.challenges ?? [])
+        .some((c) => c.progress?.status !== 'completed')
+    : isTopicMode
     ? pathway.cyberpath_courses
         .flatMap((course) => course.topics ?? [])
         .some((topic) => topic.progress?.status !== 'completed')
@@ -139,7 +152,7 @@ export default function PathwayPage() {
                   {pathway.course_mode === 'parallel' ? 'Parallel Learning' : 'Sequential Learning'}
                 </Badge>
                 <Badge className="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300 border-0">
-                  {isTopicMode ? 'Topic-Based' : 'Lesson-Based'}
+                  {isChallengeMode ? 'Challenge-Based' : isTopicMode ? 'Topic-Based' : 'Lesson-Based'}
                 </Badge>
               </div>
               <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
@@ -207,7 +220,7 @@ export default function PathwayPage() {
                     {completedItems}/{totalItems}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {isTopicMode ? 'Topics' : 'Weeks'}
+                    {isChallengeMode ? 'Challenges' : isTopicMode ? 'Topics' : 'Weeks'}
                   </p>
                 </div>
               </CardContent>
@@ -276,10 +289,12 @@ export default function PathwayPage() {
                 </div>
                 <div>
                   <CardTitle className="text-lg">Target Career</CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    {formatSalary(pathway.selected_job.salary_min)} -{' '}
-                    {formatSalary(pathway.selected_job.salary_max)} /year
-                  </p>
+                  {(pathway.selected_job.salary_min || pathway.selected_job.salary_max) && (
+                    <p className="text-sm text-muted-foreground">
+                      {formatSalary(pathway.selected_job.salary_min)} -{' '}
+                      {formatSalary(pathway.selected_job.salary_max)} /year
+                    </p>
+                  )}
                 </div>
               </div>
             </CardHeader>
